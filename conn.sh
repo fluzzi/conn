@@ -1,0 +1,287 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $DIR/scripts/errors.sh
+source $DIR/scripts/var.sh
+source $DIR/scripts/help.sh
+source $DIR/scripts/firstrun.sh
+source $DIR/scripts/adm.sh
+source $DIR/scripts/folder.sh
+source $DIR/scripts/profile.sh
+source $DIR/scripts/connect.sh
+if [ ! -f $DIR/data/.osk ]; then firstrun; fi
+if [ $# -le 4 ] && [[ $1 =~ $namesif ]]
+then
+	case $1 in
+		add)
+			if [ $# -eq 1 ]
+			 then
+				adm add
+			else
+			 if [ $# -eq 2 ]
+			  then
+				case $2 in
+					$names)
+						invalid 4 ;;
+					help)
+						help add ;;
+					*)
+						if [[ ! $2 =~ [^$validfile] ]]; then
+								adm add $2
+							else
+								invalid 5
+						fi
+				esac
+			else
+			  if [ $# -ge 3 ]
+			   then
+				invalid 3
+			  fi
+			 fi
+			fi ;;
+        del|delete|rem|remove|rm)
+            if [ $# -eq 1 ]
+			 then
+				adm del
+			else
+			 if [ $# -eq 2 ]
+			  then
+				case $2 in
+					$names)
+						invalid 4 ;;
+					help)
+						help del ;;
+					*)
+						if [[ ! $2 =~ [^$validfile] ]]; then
+								adm del $2
+							else
+								invalid 5
+						fi
+				esac
+			else
+			  if [ $# -ge 3 ]
+			   then
+				invalid 3
+			  fi
+			 fi
+			fi ;;
+		mod|modify|edit)
+            if [ $# -eq 1 ]
+			 then
+				adm mod
+			else
+			 if [ $# -eq 2 ]
+			  then
+				case $2 in
+					$names)
+						invalid 4 ;;
+					help)
+						help edit ;;
+					*)
+						if [[ ! $2 =~ [^$validfile] ]]; then
+								adm mod $2
+							else
+								invalid 5
+						fi
+				esac
+			else
+			  if [ $# -ge 3 ]
+			   then
+				invalid 3
+			  fi
+			 fi
+			fi ;;
+		help)
+			help global ;;
+        folder)
+			case $2 in
+				""|help)
+					help folder ;;
+				rename|ren|add|del|delete|rem|remove|rm)
+					if [ $# -eq 2 ]
+					then
+						invalid 2
+					fi
+					if [ $# -eq 3 ]
+					then
+						case $2 in
+							add)
+								case $3 in
+									$names)
+										invalid 4 ;;
+									help)
+										help folder-add ;;
+									*)
+										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]]; then
+										IFS='@' read -ra ADDR <<< $3
+										if [ ${#ADDR[@]} -gt 2 ]; then
+											invalid 6
+										else
+										if [ ${#ADDR[@]} -eq 1 ]; then
+											folder add ${ADDR[0]}
+										else 
+										if [ ${#ADDR[@]} -eq 2 ]; then
+											if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif ]]; then invalid 4 ; fi
+											folder add ${ADDR[0]} ${ADDR[1]} 
+										fi
+										fi
+										fi
+										else
+											invalid 5
+										fi ;;
+								esac ;;
+							del|delete|rem|remove|rm)
+								case $3 in
+									$names)
+										invalid 4 ;;
+									help)
+										help folder-del ;;
+									*)
+										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]]; then
+										IFS='@' read -ra ADDR <<< $3
+										if [ ${#ADDR[@]} -gt 2 ]; then
+											invalid 6
+										else
+										if [ ${#ADDR[@]} -eq 1 ]; then
+											folder del ${ADDR[0]}
+										else 
+										if [ ${#ADDR[@]} -eq 2 ]; then
+											if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif ]]; then invalid 4 ; fi
+											folder del ${ADDR[0]} ${ADDR[1]} 
+										fi
+										fi
+										fi
+										else
+											invalid 5
+										fi ;;
+								esac ;;
+						ren|rename)
+							case $3 in
+								help)
+									help folder-ren ;;
+								*)
+									invalid 2 ;;
+							esac
+							;;
+					esac
+					fi
+					if [ $# -eq 4 ]
+					then
+						case $2 in
+							add|del|delete|rem|remove|rm)
+								invalid 3 ;;
+							ren|rename)
+								case $3 in
+									$names)
+										invalid 4 ;;
+									help)
+										help folder-ren ;;
+									*)
+										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] &&  [[ ! $4 =~ [^$validfile] ]]; then
+										IFS='@' read -ra ADDR <<< $3
+										if [ ${#ADDR[@]} -gt 2 ]; then
+											invalid 6
+										else
+										if [ ${#ADDR[@]} -eq 1 ]; then
+											case $4 in
+												$names)
+													invalid 4 ;;
+												*)
+													folder ren ${ADDR[0]} $4 ;;
+											esac
+										else 
+										if [ ${#ADDR[@]} -eq 2 ]; then
+											if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif ]]; then invalid 4 ; fi
+											case $4 in
+												$names)
+													invalid 4 ;;
+												*)
+													folder ren ${ADDR[0]} ${ADDR[1]} $4! ;;
+											esac
+										fi
+										fi
+										fi
+										else
+											invalid 5
+										fi ;;
+								esac ;;
+						esac
+						
+					fi ;;
+				*)
+					invalid 1 ;;
+			esac
+			;;
+        profile)
+			if [ $# -le 2 ]
+			 then
+				case $2 in
+					""|help)
+						help profile ;;
+					mod|modify|edit|add|del|delete|rem|remove|rm)
+						invalid 2 ;;
+					*)
+						invalid 1 ;;
+				esac
+			else
+			 if [ $# -eq 3 ]
+			  then
+				case $2 in
+					add)
+						case $3 in
+							$names)
+								invalid 4 ;;
+							help)
+								help profile-add ;;
+							*)
+							if [[ ! $3 =~ [^$validfile] ]]; then
+								profile add $3
+							else
+								invalid 5
+							fi ;;
+						esac ;;
+					del|delete|rem|remove|rm)
+						case $3 in
+							$names)
+								invalid 4 ;;
+							help)
+								help profile-del ;;
+							*)
+							if [[ ! $3 =~ [^$validfile] ]]; then
+								profile del $3
+							else
+								invalid 5
+							fi ;;
+						esac ;;
+					mod|modify|edit)
+						case $3 in
+							$names)
+								invalid 4 ;;
+							help)
+								help profile-edit ;;
+							*)
+							if [[ ! $3 =~ [^$validfile] ]]; then
+								profile mod $3
+							else
+								invalid 5
+							fi ;;
+						esac ;;
+				esac
+			 else	
+			  if [ $# -eq 4 ]
+			  then
+				case $2 in
+					""|help)
+						help profile ;;
+					mod|modify|edit|add|del|delete|rem|remove|rm)
+						invalid 3 ;;
+					*)
+						invalid 1 ;;
+				esac
+			  fi
+			 fi
+			fi ;;
+	esac
+	exit 1
+fi
+if [ $# -gt 4 ] && [[ $1 =~ $namesif ]]; then invalid 3; fi
+connect $@
