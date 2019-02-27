@@ -2,6 +2,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $DIR/scripts/errors.sh
 source $DIR/scripts/var.sh
+source $DIR/scripts/functions.sh
 source $DIR/scripts/help.sh
 source $DIR/scripts/firstrun.sh
 source $DIR/scripts/adm.sh

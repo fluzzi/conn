@@ -7,4 +7,5 @@ invalid(){
   if [ $1 -eq 6 ]; then echo Only folder and subfolder is allowed; exit 1; fi
   if [ $1 -eq 7 ]; then echo Only connection, subfolder and folder is allowed; exit 1; fi
   if [ $1 -eq 8 ]; then echo Unknown option: $2; exit 1; fi
+  if [ $1 -eq 10 ]; then echo Profile \"$2\" already exists; exit 1; fi
 }
