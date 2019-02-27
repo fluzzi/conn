@@ -27,3 +27,11 @@ echo $@
 	  fi
   done
 }
+modify(){
+read -p "do you want to edit $1? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo true
+fi
+}
