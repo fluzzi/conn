@@ -31,7 +31,7 @@ profile(){
 	  echo do you want to set a password for this profile? if not, please leave empty
 	  echo -n Password:
 	  read -s password
-	  password=`echo $password | openssl rsautl -inkey $DIR/data/.osk -encrypt -out >(base64 -w 0)`
+	  if [ ! -z $password ]; then password=`echo $password | openssl rsautl -inkey $DIR/data/.osk -encrypt -out >(base64 -w 0)`; fi
 	  echo 
 	  echo
 	  echo do you want to set other options for this profile? if not, please leave empty
@@ -47,7 +47,7 @@ profile(){
 	  logs=$valueregex
 	  jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DIR/data/profiles.json > $DIR/data/INPUT.tmp && mv $DIR/data/INPUT.tmp $DIR/data/profiles.json; chmod  600 $DIR/data/profiles.json
 	  echo
-	  echo Profile created correctly
+	  echo Profile \"$profile\" created correctly
   exit 1; fi
   if [ $1 = "del" ]; then
 	  profile=$2
@@ -75,14 +75,17 @@ profile(){
 	  fi
 	  echo
 	  if [ ! -z $(modify Port) ]; then
+		echo
 		if [ -z $protocol ]; then
 		  echo do you want to set a port for this profile? if not, please leave empty
 		  echo options: 1-65535
+		  echo current port: ${oldvalues[1]}
 		  inputrange Port 1 65535
 		  port=$valuerange
 		else
 		  echo do you want to set a port for this profile? if $protocol default just leave empty
 		  echo options: 1-65535
+		  echo current port: ${oldvalues[1]}
 		  inputrange Port 1 65535
 		  port=$valuerange
 		  if [ $protocol = "ssh" ] && [ -z "$port" ]; then port=22; fi
@@ -92,7 +95,59 @@ profile(){
 	      port=${oldvalues[1]}
 	  fi
 	  echo
-	  echo $protocol
-	  echo $port
+	  if [ ! -z $(modify User) ]; then
+		   echo
+		   echo do you want to set a user for this profile? if not, please leave empty
+		   echo current user: ${oldvalues[2]}
+		   inputregex User '.*'
+		   user=$valueregex
+	  else
+	      user=${oldvalues[2]}
+	  fi
+	  echo
+	  if [ ! -z $(modify Password) ]; then
+		   echo
+		   echo do you want to set a password for this profile? if not, please leave empty
+		   echo -n Password:
+		   read -s password
+		   password=`echo $password | openssl rsautl -inkey $DIR/data/.osk -encrypt -out >(base64 -w 0)`
+		   echo 
+	  else
+	      password=${oldvalues[3]}
+	  fi
+	  echo
+	  if [ ! -z $(modify Options) ]; then
+		   echo
+		   echo do you want to set other options for this profile? if not, please leave empty
+		   echo you can pass extra ssh or telnet options to the session like -X or -L
+		   echo current options: ${oldvalues[4]}
+		   inputregex Options '.*'
+		   options=$valueregex
+	  else
+	      options=${oldvalues[4]}
+	  fi
+	  echo
+	  if [ ! -z $(modify Logs) ]; then
+		   echo
+		   echo do you want to save the session logs for this profile? if not, please leave empty
+		   echo set the location and file name, you can use Date command to add timestamp
+		   echo 'you can also use the following variables $hostname, $port and $user'
+		   echo example: '/home/user/logs/$hostname_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
+		   inputregex Logging '.*'
+		   logs=$valueregex
+	  else
+	      logs=${oldvalues[5]}
+	  fi
+	  newvalues=($protocol $port $user $password $options $logs)
+	  old=${oldvalues[@]}
+	  new=${newvalues[@]}
+	  if [ "$old" == "$new" ] ; then
+		echo
+		echo nothing to do here.
+	  else
+	    jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DIR/data/profiles.json > $DIR/data/INPUT.tmp && mv $DIR/data/INPUT.tmp $DIR/data/profiles.json; chmod  600 $DIR/data/profiles.json
+		echo
+		echo Profile \"$profile\" edited correctly
+	  fi
   exit 1; fi
 }

@@ -18,7 +18,6 @@ inputregex(){
   done
 }
 inputrange(){
-echo $@
   while true; do
 	read -p "$1: "  valuerange
 	if [ ! $valuerange -ge "$2" ] &> /dev/null || [ ! $valuerange -le "$3" ] &> /dev/null; then echo wrong input, please try again;
