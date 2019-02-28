@@ -196,7 +196,7 @@ then
 												$names)
 													invalid 4 ;;
 												*)
-													folder ren ${ADDR[0]} ${ADDR[1]} $4! ;;
+													folder ren ${ADDR[0]} ${ADDR[1]} $4 ;;
 											esac
 										fi
 										fi

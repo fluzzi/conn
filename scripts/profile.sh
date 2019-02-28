@@ -3,7 +3,7 @@ profile(){
 	  profile=$2
 	  mapfile -t profiles < <(jq -r 'keys[]' $DIR/data/profiles.json)
 	  if [ ! -z $(isinarray $profile ${profiles[@]}) ]; then invalid 10 $profile; fi
-	  echo Adding profile $2
+	  echo Adding profile $profile
 	  echo
 	  echo do you want to set a protocol for this profile? if not, please leave empty
 	  echo options: ssh,telnet
@@ -54,14 +54,14 @@ profile(){
 	  mapfile -t profiles < <(jq -r 'keys[]' $DIR/data/profiles.json)
 	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
 	  jq -r "del(.$profile)" $DIR/data/profiles.json > $DIR/data/INPUT.tmp && mv $DIR/data/INPUT.tmp $DIR/data/profiles.json; chmod  600 $DIR/data/profiles.json
-	  echo profile $2 deleted
+	  echo profile \"$profile\" deleted
   exit 1; fi
   if [ $1 = "mod" ]; then
 	  profile=$2
 	  mapfile -t profiles < <(jq -r 'keys[]' $DIR/data/profiles.json)
 	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
 	  mapfile -t oldvalues < <(jq -r ".$profile[]" data/profiles.json)
-	  echo Editing profile $2
+	  echo Editing profile $profile
 	  echo
 	  if [ ! -z $(modify Protocol) ]; then
 		  echo

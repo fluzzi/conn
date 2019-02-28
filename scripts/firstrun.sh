@@ -5,4 +5,6 @@ firstrun(){
   touch $DIR/data/connections.json; chmod  600 $DIR/data/connections.json
   touch $DIR/data/structure.json; chmod  600 $DIR/data/structure.json
   echo -e "{\"default\":{\"protocol\":\"ssh\", \"port\":\"22\", \"user\":\"\", \"password\":\"\", \"options\":\"\", \"logs\":\"\"}}" | jq . >> $DIR/data/profiles.json
+  echo -e "{}" >> $DIR/data/connections.json
+  echo -e "{}" >> $DIR/data/structure.json
 }
