@@ -1,7 +1,7 @@
 profile(){
   if [ $1 = "add" ]; then
 	  profile=$2
-	  mapfile -t profiles < <(jq -r 'keys[]' $DIR/data/profiles.json)
+	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
 	  if [ ! -z $(isinarray $profile ${profiles[@]}) ]; then invalid 10 $profile; fi
 	  echo Adding profile $profile
 	  echo
@@ -31,7 +31,7 @@ profile(){
 	  echo do you want to set a password for this profile? if not, please leave empty
 	  echo -n Password:
 	  read -s password
-	  if [ ! -z $password ]; then password=`echo $password | openssl rsautl -inkey $DIR/data/.osk -encrypt -out >(base64 -w 0)`; fi
+	  if [ ! -z $password ]; then password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`; fi
 	  echo 
 	  echo
 	  echo do you want to set other options for this profile? if not, please leave empty
@@ -45,20 +45,20 @@ profile(){
 	  echo example: '/home/user/logs/$hostname_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 	  inputregex Logging '.*'
 	  logs=$valueregex
-	  jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DIR/data/profiles.json > $DIR/data/INPUT.tmp && mv $DIR/data/INPUT.tmp $DIR/data/profiles.json; chmod  600 $DIR/data/profiles.json
+	  jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
 	  echo
 	  echo Profile \"$profile\" created correctly
   exit 1; fi
   if [ $1 = "del" ]; then
 	  profile=$2
-	  mapfile -t profiles < <(jq -r 'keys[]' $DIR/data/profiles.json)
+	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
 	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
-	  jq -r "del(.$profile)" $DIR/data/profiles.json > $DIR/data/INPUT.tmp && mv $DIR/data/INPUT.tmp $DIR/data/profiles.json; chmod  600 $DIR/data/profiles.json
+	  jq -r "del(.$profile)" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
 	  echo profile \"$profile\" deleted
   exit 1; fi
   if [ $1 = "mod" ]; then
 	  profile=$2
-	  mapfile -t profiles < <(jq -r 'keys[]' $DIR/data/profiles.json)
+	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
 	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
 	  mapfile -t oldvalues < <(jq -r ".$profile[]" data/profiles.json)
 	  echo Editing profile $profile
@@ -110,7 +110,7 @@ profile(){
 		   echo do you want to set a password for this profile? if not, please leave empty
 		   echo -n Password:
 		   read -s password
-		   password=`echo $password | openssl rsautl -inkey $DIR/data/.osk -encrypt -out >(base64 -w 0)`
+		   password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`
 		   echo 
 	  else
 	      password=${oldvalues[3]}
@@ -145,7 +145,7 @@ profile(){
 		echo
 		echo nothing to do here.
 	  else
-	    jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DIR/data/profiles.json > $DIR/data/INPUT.tmp && mv $DIR/data/INPUT.tmp $DIR/data/profiles.json; chmod  600 $DIR/data/profiles.json
+	    jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
 		echo
 		echo Profile \"$profile\" edited correctly
 	  fi

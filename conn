@@ -1,14 +1,17 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-source $DIR/scripts/errors.sh
-source $DIR/scripts/var.sh
-source $DIR/scripts/functions.sh
-source $DIR/scripts/help.sh
-source $DIR/scripts/firstrun.sh
-source $DIR/scripts/adm.sh
-source $DIR/scripts/folder.sh
-source $DIR/scripts/profile.sh
-source $DIR/scripts/connect.sh
+DATADIR=$DIR/data
+source $DATADIR/config
+source $DIR/.conn/errors.sh
+source $DIR/.conn/var.sh
+source $DIR/.conn/functions.sh
+source $DIR/.conn/help.sh
+source $DIR/.conn/firstrun.sh
+source $DIR/.conn/adm.sh
+source $DIR/.conn/folder.sh
+source $DIR/.conn/profile.sh
+source $DIR/.conn/connect.sh
+if [ $case == "false" ]; then lower="$(echo $@ | tr '[:upper:]' '[:lower:]')"; set -- $lower; fi
 if [ ! -f $DIR/data/.osk ]; then firstrun; fi
 if [ $# -le 4 ] && [[ $1 =~ $namesif ]]
 then
