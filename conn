@@ -19,7 +19,7 @@ then
 		add)
 			if [ $# -eq 1 ]
 			 then
-				adm add
+				invalid 2
 			else
 			 if [ $# -eq 2 ]
 			  then
@@ -45,7 +45,7 @@ then
         del|delete|rem|remove|rm)
             if [ $# -eq 1 ]
 			 then
-				adm del
+				invalid 2
 			else
 			 if [ $# -eq 2 ]
 			  then
@@ -71,7 +71,7 @@ then
 		mod|modify|edit)
             if [ $# -eq 1 ]
 			 then
-				adm mod
+				invalid 2
 			else
 			 if [ $# -eq 2 ]
 			  then
