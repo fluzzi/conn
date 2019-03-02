@@ -53,14 +53,14 @@ profile(){
 	  profile=$2
 	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
 	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
-	  jq -r "del(.$profile)" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
+	  jq -r "del(.\"$profile\")" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
 	  echo profile \"$profile\" deleted
   exit 1; fi
   if [ $1 = "mod" ]; then
 	  profile=$2
 	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
 	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
-	  mapfile -t oldvalues < <(jq -r ".$profile[]" data/profiles.json)
+	  mapfile -t oldvalues < <(jq -r ".\"$profile[]\"" data/profiles.json)
 	  echo Editing profile $profile
 	  echo
 	  if [ ! -z $(modify Protocol) ]; then
