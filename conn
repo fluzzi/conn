@@ -29,11 +29,24 @@ then
 					help)
 						help add ;;
 					*)
-						if [[ ! $2 =~ [^$validfile] ]]; then
-								adm add $2
+						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]]; then
+							IFS='@' read -ra ADDR <<< $2
+							if [ ${#ADDR[@]} -gt 3 ]; then
+								invalid 7
 							else
-								invalid 5
-						fi
+							if [ ${#ADDR[@]} -eq 1 ]; then
+								adm add ${ADDR[0]}
+							else 
+							if [ ${#ADDR[@]} -eq 2 ]; then
+								adm add ${ADDR[0]} ${ADDR[1]}
+							else
+								adm add ${ADDR[0]} ${ADDR[2]} ${ADDR[1]}
+							fi
+							fi
+							fi
+						else
+							invalid 5
+						fi ;;
 				esac
 			else
 			  if [ $# -ge 3 ]
@@ -55,11 +68,24 @@ then
 					help)
 						help del ;;
 					*)
-						if [[ ! $2 =~ [^$validfile] ]]; then
-								adm del $2
+						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]]; then
+							IFS='@' read -ra ADDR <<< $2
+							if [ ${#ADDR[@]} -gt 3 ]; then
+								invalid 7
 							else
-								invalid 5
-						fi
+							if [ ${#ADDR[@]} -eq 1 ]; then
+								adm del ${ADDR[0]}
+							else 
+							if [ ${#ADDR[@]} -eq 2 ]; then
+								adm del ${ADDR[0]} ${ADDR[1]}
+							else
+								adm del ${ADDR[0]} ${ADDR[2]} ${ADDR[1]}
+							fi
+							fi
+							fi
+						else
+							invalid 5
+						fi ;;
 				esac
 			else
 			  if [ $# -ge 3 ]
@@ -81,11 +107,24 @@ then
 					help)
 						help edit ;;
 					*)
-						if [[ ! $2 =~ [^$validfile] ]]; then
-								adm mod $2
+						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]]; then
+							IFS='@' read -ra ADDR <<< $2
+							if [ ${#ADDR[@]} -gt 3 ]; then
+								invalid 7
 							else
-								invalid 5
-						fi
+							if [ ${#ADDR[@]} -eq 1 ]; then
+								adm mod ${ADDR[0]}
+							else 
+							if [ ${#ADDR[@]} -eq 2 ]; then
+								adm mod ${ADDR[0]} ${ADDR[1]}
+							else
+								adm mod ${ADDR[0]} ${ADDR[2]} ${ADDR[1]}
+							fi
+							fi
+							fi
+						else
+							invalid 5
+						fi ;;
 				esac
 			else
 			  if [ $# -ge 3 ]
@@ -115,7 +154,7 @@ then
 									help)
 										help folder-add ;;
 									*)
-										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]]; then
+										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] && [[ ! $3 =~ ^.*@@.*$ ]]; then
 										IFS='@' read -ra ADDR <<< $3
 										if [ ${#ADDR[@]} -gt 2 ]; then
 											invalid 6
@@ -140,7 +179,7 @@ then
 									help)
 										help folder-del ;;
 									*)
-										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]]; then
+										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] && [[ ! $3 =~ ^.*@@.*$ ]]; then
 										IFS='@' read -ra ADDR <<< $3
 										if [ ${#ADDR[@]} -gt 2 ]; then
 											invalid 6
@@ -180,7 +219,7 @@ then
 									help)
 										help folder-ren ;;
 									*)
-										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] &&  [[ ! $4 =~ [^$validfile] ]]; then
+										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] && [[ ! $3 =~ ^.*@@.*$ ]] &&  [[ ! $4 =~ [^$validfile] ]]; then
 										IFS='@' read -ra ADDR <<< $3
 										if [ ${#ADDR[@]} -gt 2 ]; then
 											invalid 6

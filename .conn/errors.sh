@@ -12,8 +12,8 @@ invalid(){
   if [ $1 -eq 10 ]; then echo Profile \"$2\" already exist; exit 1; fi
   if [ $1 -eq 11 ]; then echo Profile \"$2\" do not exist; exit 1; fi
   # errors for profiles
-  if [ $1 -eq 20 ]; then echo Folder \"$2\" already exist; exit 1; fi
-  if [ $1 -eq 21 ]; then echo subfolder \"$2\@$3\" already exist; exit 1; fi
+  if [ $1 -eq 20 ]; then echo Folder or connection \"$2\" already exist; exit 1; fi
+  if [ $1 -eq 21 ]; then echo subfolder or connection \"$2\@$3\" already exist; exit 1; fi
   if [ $1 -eq 22 ]; then echo folder \"$2\" do not exist; exit 1; fi
   if [ $1 -eq 23 ]; then echo subfolder \"$2\@$3\" do not exist; exit 1; fi
 }

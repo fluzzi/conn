@@ -20,7 +20,7 @@ inputregex(){
 inputrange(){
   while true; do
 	read -p "$1: "  valuerange
-	if [ ! $valuerange -ge "$2" ] &> /dev/null || [ ! $valuerange -le "$3" ] &> /dev/null; then echo wrong input, please try again;
+	if ([ ! $valuerange -ge "$2" ] &> /dev/null || [ ! $valuerange -le "$3" ] &> /dev/null) && [[ ! $valuerange =~ (^@.+$) ]]; then echo wrong input, please try again;
 	  else
 		break
 	  fi
@@ -34,3 +34,4 @@ then
     echo true
 fi
 }
+function join_by { local IFS="$1"; shift; echo "$*"; }

@@ -35,7 +35,7 @@ profile(){
 	  echo 
 	  echo
 	  echo do you want to set other options for this profile? if not, please leave empty
-	  echo you can pass extra ssh or telnet options to the session like -X or -L
+	  echo you can pass extra ssh or telnet options to the session like -X, -L or combined options
 	  inputregex Options '.*'
 	  options=$valueregex
 	  echo
@@ -119,7 +119,7 @@ profile(){
 	  if [ ! -z $(modify Options) ]; then
 		   echo
 		   echo do you want to set other options for this profile? if not, please leave empty
-		   echo you can pass extra ssh or telnet options to the session like -X or -L
+		   echo you can pass extra ssh or telnet options to the session like -X, -L or combined options
 		   echo current options: ${oldvalues[4]}
 		   inputregex Options '.*'
 		   options=$valueregex
