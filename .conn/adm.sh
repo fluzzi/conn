@@ -6,12 +6,12 @@ adm(){
 	  subfolder=$4
 	  if [ ! -z $folder ]
 		then fold=\"$folder\" 
-		mapfile -t folders < <(jq -r 'keys[]' $DATADIR/connections.json)
+		mapfile -t folders < <(jq -r '. as $object | keys[] | select($object[.].type == "folder")?' $DATADIR/connections.json)
 		if [ -z $(isinarray $folder ${folders[@]}) ]; then invalid 22 $folder; fi
 	  fi
 	  if [ ! -z $subfolder ]
 		then subf=\"$subfolder\" 
-		getsubfolders=(jq -r \'\.\? \| \.\"$folder\"\? \| keys\[\]\' $DATADIR/connections.json)
+		getsubfolders=(jq -r \'\.\"$folder\" \| \. as \$object \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"subfolder\"\)\?\' $DATADIR/connections.json)
 	    mapfile -t subfolders < <(eval ${getsubfolders[@]})
 		if [ -z $(isinarray $subfolder ${subfolders[@]}) ]; then invalid 23 $subfolder $folder; fi
 	  fi
@@ -91,15 +91,32 @@ adm(){
 		sub=(jq -c \'.\"$folder\" \| \. \+ \{\"$subfolder\"\:\{$sub1\, \"$connection\"\:\{\"type\"\:\"connection\"\, \"host\"\:\"$host\"\, \"protocol\"\:\"$protocol\"\, \"port\"\:\"$port\"\, \"user\"\:\"$user\"\, \"password\"\:\"$password\"\, \"options\"\:\"$options\"\, \"logs\"\:\"$logs\"\}\}\}\'  $DATADIR/connections.json)
 		sub=$(eval ${sub[@]})
 		sub=${sub:1:-1}
-		jq -r ". | . + {\"$folder\":{$sub,\"$connection\":{\"type\":\"connection\", \"host\":\"$host\", \"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}}" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
+		jq -r ". | . + {\"$folder\":{$sub}}" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
 		;;
 	  esac
 	  echo
 	  echo Connection \"$(join_by @ $connection $subfolder $folder)\" added correctly
-  
   exit 1; fi
-  if [ $1 = "del" ]; then echo deleting $2!; 
-  
+  if [ $1 = "del" ]; then
+	  connection=$2
+	  folder=$3
+	  subfolder=$4
+	  if [ ! -z $folder ]
+		then fold=\"$folder\" 
+		mapfile -t folders < <(jq -r '. as $object | keys[] | select($object[.].type == "folder")?' $DATADIR/connections.json)
+		if [ -z $(isinarray $folder ${folders[@]}) ]; then invalid 22 $folder; fi
+	  fi
+	  if [ ! -z $subfolder ]
+		then subf=\"$subfolder\" 
+		getsubfolders=(jq -r \'\.\"$folder\" \| \. as \$object \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"subfolder\"\)\?\' $DATADIR/connections.json)
+	    mapfile -t subfolders < <(eval ${getsubfolders[@]})
+		if [ -z $(isinarray $subfolder ${subfolders[@]}) ]; then invalid 23 $subfolder $folder; fi
+	  fi
+	  getconnections=(jq -r \'\.\? \| \.$fold\? \| \.$subf\? \| keys\[\]\' $DATADIR/connections.json)
+	  mapfile -t connections < <(eval ${getconnections[@]})
+	  if [ -z $(isinarray $connection ${connections[@]}) ]; then invalid 24 $(join_by @ $connection $subfolder $folder); fi
+		jq -r "del( . | .$fold | .$subf | .\"$connection\")" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
+	  echo Subfolder \"$(join_by @ $connection $subfolder $folder)\" deleted
   exit 1; fi
   if [ $1 = "mod" ]; then echo modifying $2!; 
   
