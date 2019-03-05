@@ -11,6 +11,8 @@ invalid(){
   # errors for profiles
   if [ $1 -eq 10 ]; then echo Profile \"$2\" already exist; exit 1; fi
   if [ $1 -eq 11 ]; then echo Profile \"$2\" do not exist; exit 1; fi
+  if [ $1 -eq 12 ]; then echo Profile \"$2\" can not be deleted; exit 1; fi
+  if [ $1 -eq 13 ]; then echo Profile \"$2\" is being used by a connection; exit 1; fi
   # errors for folders and connections
   if [ $1 -eq 20 ]; then echo Folder or connection \"$2\" already exist; exit 1; fi
   if [ $1 -eq 21 ]; then echo subfolder \"$2\@$3\" already exist; exit 1; fi

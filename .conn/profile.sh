@@ -53,6 +53,9 @@ profile(){
 	  profile=$2
 	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
 	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
+	  if [ $profile == "default" ]; then invalid 12 $profile; fi
+	  mapfile -t profileused < <(jq -r ".[] | select(.. == \"@$profile\")[]" $DATADIR/connections.json)
+	  if [ ! -z ${profileused[0]} ]; then invalid 13 $profile; fi
 	  jq -r "del(.\"$profile\")" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
 	  echo profile \"$profile\" deleted
   exit 1; fi

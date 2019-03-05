@@ -327,4 +327,14 @@ then
 	exit 1
 fi
 if [ $# -gt 4 ] && [[ $1 =~ $namesif ]]; then invalid 3; fi
+if [[ $1 == "--allow-uppercase" ]]; then 
+	case $2 in
+		true)
+			sed -i 's/case=.*/case="true"/' $DATADIR/config;;
+		false)
+			sed -i 's/case=.*/case="false"/' $DATADIR/config;;
+		*)
+			invalid 8 $2;;
+	esac
+	exit 1; fi
 connect $@
