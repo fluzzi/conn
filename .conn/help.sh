@@ -10,5 +10,7 @@ help(){
   if [ $1 = "profile-edit" ]; then echo help profile edit; exit 1; fi
   if [ $1 = "del" ]; then echo help del; exit 1; fi
   if [ $1 = "edit" ]; then echo help edit; exit 1; fi
+  if [ $1 = "ren" ]; then echo help ren; exit 1; fi
+  if [ $1 = "edit" ]; then echo help edit; exit 1; fi
   if [ $1 = "global" ]; then echo help global; exit 1; fi
 }

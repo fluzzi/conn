@@ -133,6 +133,59 @@ then
 			  fi
 			 fi
 			fi ;;
+		ren|rename)
+			if [ $# -le 2 ]
+			 then
+				invalid 2
+			fi
+			if [ $# -ge 4 ]
+			 then
+				invalid 3 
+			fi
+			if [ $# -eq 3 ]
+			 then
+				case $2 in
+					$names)
+						invalid 4 ;;
+					help)
+						help ren ;;
+					*)
+						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]] &&  [[ ! $3 =~ [^$validfile] ]]; then
+						IFS='@' read -ra ADDR <<< $2
+						if [ ${#ADDR[@]} -gt 3 ]; then
+							invalid 7
+						fi
+						if [ ${#ADDR[@]} -eq 1 ]; then
+							case $3 in
+								$names)
+									invalid 4 ;;
+								*)
+									adm ren ${ADDR[0]} $3 ;;
+							esac
+						fi 
+						if [ ${#ADDR[@]} -eq 2 ]; then
+							if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif ]]; then invalid 4 ; fi
+							case $3 in
+								$names)
+									invalid 4 ;;
+								*)
+									adm ren ${ADDR[0]} $3 ${ADDR[1]};;
+							esac
+						fi
+						if [ ${#ADDR[@]} -eq 3 ]; then
+							if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif || ${ADDR[2]} =~ $namesif ]]; then invalid 4 ; fi
+							case $3 in
+								$names)
+									invalid 4 ;;
+								*)
+									adm ren ${ADDR[0]} $3 ${ADDR[2]} ${ADDR[1]};;
+							esac
+						fi
+						else
+							invalid 5
+						fi ;;
+				esac
+			fi;;
 		help)
 			help global ;;
         folder)
