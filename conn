@@ -1,18 +1,18 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-DATADIR=$DIR/data
+DATADIR=$HOME/.conn
+source $DIR/.conn/firstrun.sh
+if [ ! -f $DATADIR/.osk ]; then firstrun; fi
 source $DATADIR/config
 source $DIR/.conn/errors.sh
 source $DIR/.conn/var.sh
 source $DIR/.conn/functions.sh
 source $DIR/.conn/help.sh
-source $DIR/.conn/firstrun.sh
 source $DIR/.conn/adm.sh
 source $DIR/.conn/folder.sh
 source $DIR/.conn/profile.sh
 source $DIR/.conn/connect.sh
 if [ $case == "false" ]; then lower="$(echo $@ | tr '[:upper:]' '[:lower:]')"; set -- $lower; fi
-if [ ! -f $DIR/data/.osk ]; then firstrun; fi
 if [ $# -le 4 ] && [[ $1 =~ $namesif ]]
 then
 	case $1 in
