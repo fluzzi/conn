@@ -1,4 +1,3 @@
-#!/bin/bash
 isinarray(){
 first=$1
 shift

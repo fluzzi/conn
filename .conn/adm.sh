@@ -1,4 +1,3 @@
-#!/bin/bash
 adm(){
   if [ $1 = "add" ]; then
 	  connection=$2
@@ -17,7 +16,6 @@ adm(){
 	  fi
 	  getconnections=(jq -r \'\. \? \| \.$fold \? \| \.$subf \? \| keys\[\]\' $DATADIR/connections.json)
 	  mapfile -t connections < <(eval ${getconnections[@]})
-	  echo debug $connection - ${connections[@]}
 	  if [ ! -z $(isinarray $connection ${connections[@]}) ]; then invalid 20 $(join_by @ $connection $subfolder $folder); fi
 	  echo Adding connection $(join_by @ $connection $subfolder $folder)
 	  echo
