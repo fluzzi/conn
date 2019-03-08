@@ -63,15 +63,23 @@ profile(){
 	  profile=$2
 	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
 	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
-	  mapfile -t oldvalues < <(jq -r ".\"$profile\"[]" data/profiles.json)
+	  mapfile -t oldvalues < <(jq -r ".\"$profile\"[]" $DATADIR/profiles.json)
 	  echo Editing profile $profile
 	  echo
 	  if [ ! -z $(modify Protocol) ]; then
 		  echo
-		  echo do you want to set a protocol for this profile? if not, please leave empty
+		  if [ $profile == "default" ]; then
+			echo Select a protocol for this profile:
+		  else
+			echo do you want to set a protocol for this profile? if not, please leave empty
+		  fi
 		  echo options: ssh,telnet
 		  echo current protocol: ${oldvalues[0]}
-		  inputregex Protocol '(^ssh$|^telnet$|^$)'
+		  if [ $profile == "default" ]; then
+			inputregex Protocol '(^ssh$|^telnet$)'
+		  else
+			inputregex Protocol '(^ssh$|^telnet$|^$)'
+		  fi
 		  protocol=$valueregex
 	  else
 	      protocol=${oldvalues[0]}

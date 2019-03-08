@@ -133,7 +133,7 @@ adm(){
 	  getconnections=(jq -r \'\. \? \| \.$fold \? \| \.$subf \? \| \. as \$object\ \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"connection\"\)\?\' $DATADIR/connections.json)
 	  mapfile -t connections < <(eval ${getconnections[@]})
 	  if [ -z $(isinarray $connection ${connections[@]}) ]; then invalid 24 $(join_by @ $connection $subfolder $folder); fi
-	  mapfile -t oldvalues < <(jq -r ".\"$profile[]\"" data/profiles.json)
+	  mapfile -t oldvalues < <(jq -r ".\"$profile[]\"" $DATADIR/profiles.json)
 	  getoldvalues=(jq -r \'\.\? \| \.$fold\? \| \.$subf\? \| \.\"$connection\"\[\]\' $DATADIR/connections.json)
 	  mapfile -t oldvalues < <(eval ${getoldvalues[@]})
 	  echo editing connection $(join_by @ $connection $subfolder $folder)

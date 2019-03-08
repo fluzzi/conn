@@ -34,4 +34,29 @@ then
     printf true
 fi
 }
-function join_by { local IFS="$1"; shift; echo "$*"; }
+function join_by { 
+input=($@)
+if [[ ${input[0]} == "-m" ]]; then
+local IFS="@"; shift 2; 
+sed "s/@/${input[1]}/g" <<< "$*"
+else
+local IFS="$1"; shift; echo "$*"; 
+fi
+}
+split_by () {
+    string=$1
+    separator=$2
+	result=()
+    tmp=${string//"$separator"/$'\2'}
+    IFS=$'\2' read -a arr <<< "$tmp"
+	num=$((${#arr[@]} - 1))
+	if [[ $3 == "-r" ]]; then
+	for substr in "${arr[@]}" ; do
+		result[$num]="$substr"
+		((num--))
+    done
+	else
+	result=(${arr[@]})
+	fi
+	echo ${result[@]}
+}
