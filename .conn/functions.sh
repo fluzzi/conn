@@ -60,3 +60,23 @@ split_by () {
 	fi
 	echo ${result[@]}
 }
+get_values () {
+	path=$(split_by $1 "@")
+	if [ $# -eq 3 ]; then path=(jq -r \'.\"$3\".\"$2\".\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json); fi
+	if [ $# -eq 2 ]; then path=(jq -r \'.\"$2\".\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json); fi
+	if [ $# -eq 1 ]; then path=(jq -r \'.\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json); fi
+	mapfile -t args < <(eval ${path[@]})
+	for i in "${!args[@]}"; do
+		if [ -z ${args[$i]} ] && [ $i -ge 2 ] && [ $i -le 3 ]; then
+			this=(jq -r \'.\"default\".${arguments[$i]}\' $DATADIR/profiles.json)
+			mapfile -t this < <(eval ${this[@]})
+			args[$i]=${this[@]}
+		fi
+		if [[ ${args[$i]} =~ ^@.*$ ]]; then
+			this=${args[$i]#?}
+			this=(jq -r \'.\"$this\".${arguments[$i]}\' $DATADIR/profiles.json)
+			mapfile -t this < <(eval ${this[@]})
+			args[$i]=${this[@]}
+		fi
+	done
+}

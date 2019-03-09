@@ -19,4 +19,5 @@ invalid(){
   if [ $1 -eq 22 ]; then echo folder \"$2\" do not exist; exit 1; fi
   if [ $1 -eq 23 ]; then echo subfolder \"$2\@$3\" do not exist; exit 1; fi
   if [ $1 -eq 24 ]; then echo connection \"$2\" do not exist; exit 1; fi
+  if [ $1 -eq 25 ]; then echo invalid address \"$2\"; exit 1; fi
 }
