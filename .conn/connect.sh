@@ -6,16 +6,23 @@ if [ $# -eq 0 ] || ( [ $# -eq 1 ] && [[ $1 =~ ^@.*$ ]] && [[ ! $1 =~ ^.*@$ ]] &&
 	else
 		if [ ! -z ${ADDR[2]} ];	then fold2=\"${ADDR[2]}\"; fi
 		if [ ! -z ${ADDR[1]} ];	then fold1=\"${ADDR[1]}\"; fi
-		getconnections=(jq -r \'\. \? \| \.$fold2 \? \| \.$fold1 \? \| paths as \$path \| select\(getpath\(\$path\) \=\= \"connection\"\) \| \$path \|  map\(select\(\. \!\= \"type\"\)\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
+		getconnections=(jq -r \'\.  \| \.$fold2  \| \.$fold1  \| paths as \$path \| select\(getpath\(\$path\) \=\= \"connection\"\) \| \$path \|  map\(select\(\. \!\= \"type\"\)\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
 		mapfile -t connections < <(eval ${getconnections[@]})
 		if [ ${#connections[@]} -eq 0 ]; then invalid 25 $1 ; fi
 		for i in ${!connections[@]}; do
-		connections[$i]=$(split_by ${connections[$i]} "@" -r)
-		connections[$i]="$(($i + 1)) - $(join_by "@" ${connections[$i]})"
+		con=$(split_by ${connections[$i]} "@" -r)
+		con="$(join_by "@" ${connections[$i]})"
+		echo "$(($i + 1)) - $con"
 		done
-		printf '%s\n' "${connections[@]}"
+		inputrange Port 1 $((i + 1))
+		if [[ ! $valuerange =~ (^[0-9]+$) ]] ; then
+			exit 1
+		else 
+			connections=(${connections[$(($valuerange -1))]})
+			declare args
+			get_values ${connections[0]} ${ADDR[1]} ${ADDR[2]}
+		fi
 	fi
-	exit 1
 else
 if [ $# -eq 1 ]; then
 	if [[ ! $1 =~ [^$validdir] ]] && [[ ! $1 =~ ^.*@$ ]] && [[ ! $1 =~ ^.*@@.*$ ]]; then
@@ -26,19 +33,27 @@ if [ $# -eq 1 ]; then
 		if [ ${#ADDR[@]} -le 3 ]; then
 			if [ ! -z ${ADDR[2]} ];	then fold2=\"${ADDR[2]}\"; fi
 			if [ ! -z ${ADDR[1]} ];	then fold1=\"${ADDR[1]}\"; fi
-			getconnections=(jq -r \'\. \? \| \.$fold2 \? \| \.$fold1 \? \| paths \| select\(\.\[-1\] \=\= \"${ADDR[0]}\"\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
+			getconnections=(jq -r \'\. \| \.$fold2 \| \.$fold1 \| paths \| select\(\.\[-1\] \=\= \"${ADDR[0]}\"\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
 			mapfile -t connections < <(eval ${getconnections[@]})
 			if [ ${#connections[@]} -eq 0 ]; then invalid 24 $1 ; fi
 			if [ ${#connections[@]} -eq 1 ]; then
 				declare args
+				echo ${connections[0]}
 				get_values ${connections[0]} ${ADDR[1]} ${ADDR[2]}
-			else
+			else 
 				for i in ${!connections[@]}; do
-				connections[$i]=$(split_by ${connections[$i]} "@" -r)
-				connections[$i]="$(($i + 1)) - $(join_by "@" ${connections[$i]})"
+				con=$(split_by ${connections[$i]} "@" -r)
+				con="$(join_by "@" ${connections[$i]})"
+				echo "$(($i + 1)) - $con"
 				done
-				printf '%s\n' "${connections[@]}"
-				exit 1
+				inputrange Port 1 $((i + 1))
+				if [[ ! $valuerange =~ (^[0-9]+$) ]] ; then
+					exit 1
+				else 
+					connections=(${connections[$(($valuerange -1))]})
+					declare args
+					get_values ${connections[0]} ${ADDR[1]} ${ADDR[2]}
+				fi
 			fi
 		fi
 		fi

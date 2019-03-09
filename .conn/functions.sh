@@ -20,7 +20,7 @@ inputregex(){
 inputrange(){
   while true; do
 	read -p "$1: "  valuerange
-	if ([ ! $valuerange -ge "$2" ] &> /dev/null || [ ! $valuerange -le "$3" ] &> /dev/null) && [[ ! $valuerange =~ (^@.+$) ]]; then echo wrong input, please try again;
+	if ([ ! $valuerange -ge "$2" ] &> /dev/null || [ ! $valuerange -le "$3" ] &> /dev/null ) || ([ ! -z $valuerange ] && [[ ! $valuerange =~ (^@.+$) ]] && [[ ! $valuerange =~ (^[0-9]+$) ]]); then echo wrong input, please try again;
 	  else
 		break
 	  fi
