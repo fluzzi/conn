@@ -8,6 +8,7 @@ invalid(){
   if [ $1 -eq 6 ]; then echo Only folder and subfolder is allowed; exit 1; fi
   if [ $1 -eq 7 ]; then echo Only connection, subfolder and folder is allowed; exit 1; fi
   if [ $1 -eq 8 ]; then echo Unknown option: $2; exit 1; fi
+  if [ $1 -eq 9 ]; then echo Invalid protocol $2; exit 1; fi
   # errors for profiles
   if [ $1 -eq 10 ]; then echo Profile \"$2\" already exist; exit 1; fi
   if [ $1 -eq 11 ]; then echo Profile \"$2\" do not exist; exit 1; fi

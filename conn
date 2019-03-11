@@ -12,7 +12,14 @@ source $DIR/.conn/adm.sh
 source $DIR/.conn/folder.sh
 source $DIR/.conn/profile.sh
 source $DIR/.conn/connect.sh
-if [ $case == "false" ]; then lower="$(echo $@ | tr '[:upper:]' '[:lower:]')"; set -- $lower; fi
+if [ $case == "false" ]; then 
+opts=()
+while [ $# -gt 0 ]; do
+	if [[ $1 =~ ^-.*$ ]]; then opts+=("$1"); else
+	opts+=("$(echo $1 | tr '[:upper:]' '[:lower:]')"); fi
+	shift
+done
+set -- "${opts[@]}"; fi
 if [ $# -le 4 ] && [[ $1 =~ $namesif ]]
 then
 	case $1 in
@@ -390,4 +397,4 @@ if [[ $1 == "--allow-uppercase" ]]; then
 			invalid 8 $2;;
 	esac
 	exit 1; fi
-connect $@
+connect "$@"

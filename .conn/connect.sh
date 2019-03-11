@@ -38,7 +38,6 @@ if [ $# -eq 1 ]; then
 			if [ ${#connections[@]} -eq 0 ]; then invalid 24 $1 ; fi
 			if [ ${#connections[@]} -eq 1 ]; then
 				declare args
-				echo ${connections[0]}
 				get_values ${connections[0]} ${ADDR[1]} ${ADDR[2]}
 			else 
 				for i in ${!connections[@]}; do
@@ -60,43 +59,63 @@ if [ $# -eq 1 ]; then
 	else
 		invalid 5
 	fi
-else
-	while (( $# )); do
-		if [ $flag -eq 1 ]; then
-			flag=0
-			shift
-			continue 2
-		fi
-	  case $1 in
-		-a)   flags="$flags -a";flags="$flags $2"; flag=1 ;;
-		-b)   flags="$flags -b";flags="$flags $2"; flag=1 ;;
-		-c)   flags="$flags -c";flags="$flags $2"; flag=1 ;;
-		-*)        invalid 8 $1;;
-		*)         args+=( "$1" ); flag=0 ;;
-	  esac
-	  shift
+else       # Reset in case getopts has been used previously in the shell.
+	declare -A flags
+	vals=()
+	while [ $# -gt 0 ]; do
+		OPTIND=1
+		tot=$OPTIND
+		while getopts l:p:o:s opt; do
+		  case "$opt" in
+		   l) flags[user]="$OPTARG";;
+		   p) flags[port]="$OPTARG";;
+		   o) flags[options]="$OPTARG";;
+		   s) flags[password]="null";;
+		   *) exit 1
+		  esac
+		done
+		if [ $tot -eq $OPTIND ]; then vals+=("$1"); shift; else shift $((OPTIND-1)); fi
 	done
-	set -- "${args[@]}"
-	if [ ${#args[@]} -eq 1 ]
+	if [ ${#vals[@]} -eq 1 ]
 		then
-		if [[ ! $1 =~ [^$validdir] ]] && [[ ! $1 =~ ^@.*$ ]] && [[ ! $1 =~ ^.*@$ ]] && [[ ! $1 =~ ^.*@@.*$ ]]; then
-			IFS='@' read -ra ADDR <<< ${args[0]}
+		if [[ ! ${vals[@]} =~ [^$validdir] ]] && [[ ! ${vals[@]} =~ ^@.*$ ]] && [[ ! ${vals[@]} =~ ^.*@$ ]] && [[ ! ${vals[@]} =~ ^.*@@.*$ ]]; then
+			IFS='@' read -ra ADDR <<< ${vals[@]}
 			if [ ${#ADDR[@]} -gt 3 ]; then
 				invalid 7
 			else
-			if [ ${#ADDR[@]} -eq 1 ]; then
-				echo opening connection ${ADDR[0]}  with options $flags!
-			else 
-			if [ ${#ADDR[@]} -eq 2 ]; then
-				echo  opening connection ${ADDR[0]} of folder ${ADDR[1]}  with options $flags!
-			else
-				echo  opening connection ${ADDR[0]} of subfolder ${ADDR[1]} of folder ${ADDR[2]} with options $flags!
-			fi
+			if [ ${#ADDR[@]} -le 3 ]; then
+				if [ ! -z ${ADDR[2]} ];	then fold2=\"${ADDR[2]}\"; fi
+				if [ ! -z ${ADDR[1]} ];	then fold1=\"${ADDR[1]}\"; fi
+				getconnections=(jq -r \'\. \| \.$fold2 \| \.$fold1 \| paths \| select\(\.\[-1\] \=\= \"${ADDR[0]}\"\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
+				mapfile -t connections < <(eval ${getconnections[@]})
+				if [ ${#connections[@]} -eq 0 ]; then invalid 24 ${vals[@]} ; fi
+				if [ ${#connections[@]} -eq 1 ]; then
+					declare args
+					get_values ${connections[0]} ${ADDR[1]} ${ADDR[2]}
+				else 
+					for i in ${!connections[@]}; do
+					con=$(split_by ${connections[$i]} "@" -r)
+					con="$(join_by "@" ${connections[$i]})"
+					echo "$(($i + 1)) - $con"
+					done
+					inputrange Port 1 $((i + 1))
+					if [[ ! $valuerange =~ (^[0-9]+$) ]] ; then
+						exit 1
+					else 
+						connections=(${connections[$(($valuerange -1))]})
+						declare args
+						get_values ${connections[0]} ${ADDR[1]} ${ADDR[2]}
+					fi
+				fi
 			fi
 			fi
 		else
 			invalid 5
 		fi
+		if [ ! -z "${flags[port]}" ]; then args[3]="${flags[port]}"; fi
+		if [ ! -z "${flags[user]}" ]; then args[4]="${flags[user]}"; fi
+		if [ ! -z "${flags[options]}" ]; then args[6]="${flags[options]}"; fi
+		if [ ! -z "${flags[password]}" ] || [ ! -z "${flags[user]}" ]; then args[5]=""; fi
 	else
 		invalid 3
 	fi
@@ -112,6 +131,7 @@ if [ $protocol = "ssh" ]; then
 	if [ ! -z $password ]; then password="expect\
 	\"(yes/no)\" { send \"yes\r\";exp_continue}\
 	\"refused\" { exit 1}\
+	\"supported\" { exit 1}\
 	\"timeout\" { puts  \"connection timeout\"; exit 1}\
 	\"unavailable\" { puts \"connection timeout\"; exit 1}\
 	\"closed\" { exit 1}\
@@ -120,8 +140,7 @@ if [ $protocol = "ssh" ]; then
 	fi
 	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $password; interact" | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs) ;
 	else /usr/bin/expect -c "log_user 0; eval spawn $cmd; log_user 1; $password; interact"; fi
-fi
-if [ $protocol = "telnet" ]; then
+elif [ $protocol = "telnet" ]; then
 	cmd="telnet $hostname $port $options"
 	if [ ! -z $password ] ; then userpass="expect\
 	\"sername:\" { send \"$user\r\";exp_continue}\
@@ -143,5 +162,8 @@ if [ $protocol = "telnet" ]; then
 	fi
 	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $userpass; interact" | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs) ;
 	else /usr/bin/expect -c "log_user 0; eval spawn $cmd; log_user 1; $userpass; interact"; fi
+else 
+invalid 9 $protocol
 fi
+
 }

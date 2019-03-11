@@ -67,12 +67,12 @@ get_values () {
 	if [ $# -eq 1 ]; then path=(jq -r \'.\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json); fi
 	mapfile -t args < <(eval ${path[@]})
 	for i in "${!args[@]}"; do
-		if [ -z ${args[$i]} ] && [ $i -ge 2 ] && [ $i -le 3 ]; then
+		if [ -z "${args[$i]}" ] && [ $i -ge 2 ] && [ $i -le 3 ]; then
 			this=(jq -r \'.\"default\".${arguments[$i]}\' $DATADIR/profiles.json)
 			mapfile -t this < <(eval ${this[@]})
 			args[$i]=${this[@]}
 		fi
-		if [[ ${args[$i]} =~ ^@.*$ ]]; then
+		if [[ "${args[$i]}" =~ ^@.*$ ]]; then
 			this=${args[$i]#?}
 			this=(jq -r \'.\"$this\".${arguments[$i]}\' $DATADIR/profiles.json)
 			mapfile -t this < <(eval ${this[@]})
