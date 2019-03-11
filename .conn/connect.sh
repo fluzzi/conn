@@ -65,10 +65,11 @@ else       # Reset in case getopts has been used previously in the shell.
 	while [ $# -gt 0 ]; do
 		OPTIND=1
 		tot=$OPTIND
-		while getopts l:p:o:s opt; do
+		while getopts l:p:P:o:s opt; do
 		  case "$opt" in
 		   l) flags[user]="$OPTARG";;
 		   p) flags[port]="$OPTARG";;
+		   P) flags[protocol]="$OPTARG";;
 		   o) flags[options]="$OPTARG";;
 		   s) flags[password]="null";;
 		   *) exit 1
@@ -112,6 +113,7 @@ else       # Reset in case getopts has been used previously in the shell.
 		else
 			invalid 5
 		fi
+		if [ ! -z "${flags[protocol]}" ]; then args[2]="${flags[protocol]}"; fi
 		if [ ! -z "${flags[port]}" ]; then args[3]="${flags[port]}"; fi
 		if [ ! -z "${flags[user]}" ]; then args[4]="${flags[user]}"; fi
 		if [ ! -z "${flags[options]}" ]; then args[6]="${flags[options]}"; fi
@@ -132,6 +134,7 @@ if [ $protocol = "ssh" ]; then
 	\"(yes/no)\" { send \"yes\r\";exp_continue}\
 	\"refused\" { exit 1}\
 	\"supported\" { exit 1}\
+	\"sage:\" { exit 1}\
 	\"timeout\" { puts  \"connection timeout\"; exit 1}\
 	\"unavailable\" { puts \"connection timeout\"; exit 1}\
 	\"closed\" { exit 1}\
@@ -145,6 +148,7 @@ elif [ $protocol = "telnet" ]; then
 	if [ ! -z $password ] ; then userpass="expect\
 	\"sername:\" { send \"$user\r\";exp_continue}\
 	\"refused\" { exit 1}\
+	\"sage:\" { exit 1}\
 	\"timeout\" { puts  \"connection timeout\"; exit 1}\
 	\"unavailable\" { puts \"connection timeout\"; exit 1}\
 	\"closed\" { exit 1}\

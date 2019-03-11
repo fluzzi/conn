@@ -1,4 +1,12 @@
 #!/bin/bash
+array=("tee" "sed" "jq" "echo" "print" "touch" "chmod" "expect" "base64" "openssl" "cd" "dirname" "source" "read" "mkdir" "mapfile" "eval" "ssh" "telnet" "shopt" "getopts")
+for i in "${array[@]}"
+do
+    command -v $i >/dev/null 2>&1 || { 
+        echo >&2 "package \"$i\" required"; 
+        exit 1; 
+    }
+done
 if [ $# -gt 1 ]; then echo "invalid arguments"; fi;
 case $1 in
 "")

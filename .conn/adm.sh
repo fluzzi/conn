@@ -68,7 +68,7 @@ adm(){
 	  echo
 	  echo do you want to save the session logs for this connection? if not, please leave empty
 	  echo set the location and file name, you can use Date command to add timestamp
-	  echo 'you can also use the following variables $hostname, $port and $user'
+	  echo 'you can also use the following variables ${hostname}, ${port} and ${user}'
 	  echo example: '/home/user/logs/$hostname_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 	  echo you can use the configured setting in a profile using @profilename
 	  inputregex Logging '.*'
@@ -224,7 +224,7 @@ adm(){
 		  echo
 		  echo do you want to save the session logs for this connection? if not, please leave empty
 		  echo set the location and file name, you can use Date command to add timestamp
-		  echo 'you can also use the following variables $hostname, $port and $user'
+		  echo 'you can also use the following variables ${hostname}, ${port} and ${user}'
 		  echo example: '/home/user/logs/$hostname_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 		  echo you can use the configured setting in a profile using @profilename
 		  echo current options: ${oldvalues[7]}
