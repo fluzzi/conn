@@ -1,5 +1,5 @@
 #!/bin/bash
-array=("tee" "sed" "jq" "echo" "print" "touch" "chmod" "expect" "base64" "openssl" "cd" "dirname" "source" "read" "mkdir" "mapfile" "eval" "ssh" "telnet" "shopt" "getopts")
+array=("tee" "sed" "jq" "echo" "printf" "touch" "chmod" "expect" "base64" "openssl" "cd" "dirname" "source" "read" "mkdir" "mapfile" "eval" "ssh" "telnet" "shopt" "getopts")
 for i in "${array[@]}"
 do
     command -v $i >/dev/null 2>&1 || { 
