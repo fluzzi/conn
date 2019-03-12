@@ -14,7 +14,7 @@ adm(){
 	    mapfile -t subfolders < <(eval ${getsubfolders[@]})
 		if [ -z $(isinarray $subfolder ${subfolders[@]}) ]; then invalid 23 $subfolder $folder; fi
 	  fi
-	  getconnections=(jq -r \'\. \? \| \.$fold \? \| \.$subf \? \| keys\[\]\' $DATADIR/connections.json)
+	  getconnections=(jq -r \'\. \| \.$fold \| \.$subf \| keys\[\]\' $DATADIR/connections.json)
 	  mapfile -t connections < <(eval ${getconnections[@]})
 	  if [ ! -z $(isinarray $connection ${connections[@]}) ]; then invalid 20 $(join_by @ $connection $subfolder $folder); fi
 	  echo Adding connection $(join_by @ $connection $subfolder $folder)
@@ -113,7 +113,7 @@ adm(){
 	    mapfile -t subfolders < <(eval ${getsubfolders[@]})
 		if [ -z $(isinarray $subfolder ${subfolders[@]}) ]; then invalid 23 $subfolder $folder; fi
 	  fi
-	  getconnections=(jq -r \'\. \? \| \.$fold \? \| \.$subf \? \| \. as \$object\ \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"connection\"\)\?\' $DATADIR/connections.json)
+	  getconnections=(jq -r \'\. \| \.$fold \| \.$subf \| \. as \$object\ \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"connection\"\)\?\' $DATADIR/connections.json)
 	  mapfile -t connections < <(eval ${getconnections[@]})
 	  if [ -z $(isinarray $connection ${connections[@]}) ]; then invalid 24 $(join_by @ $connection $subfolder $folder); fi
 		jq -r "del( . | .$fold | .$subf | .\"$connection\")" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
@@ -134,11 +134,10 @@ adm(){
 	    mapfile -t subfolders < <(eval ${getsubfolders[@]})
 		if [ -z $(isinarray $subfolder ${subfolders[@]}) ]; then invalid 23 $subfolder $folder; fi
 	  fi
-	  getconnections=(jq -r \'\. \? \| \.$fold \? \| \.$subf \? \| \. as \$object\ \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"connection\"\)\?\' $DATADIR/connections.json)
+	  getconnections=(jq -r \'\. \| \.$fold \| \.$subf \| \. as \$object\ \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"connection\"\)\?\' $DATADIR/connections.json)
 	  mapfile -t connections < <(eval ${getconnections[@]})
 	  if [ -z $(isinarray $connection ${connections[@]}) ]; then invalid 24 $(join_by @ $connection $subfolder $folder); fi
-	  mapfile -t oldvalues < <(jq -r ".\"$profile[]\"" $DATADIR/profiles.json)
-	  getoldvalues=(jq -r \'\.\? \| \.$fold\? \| \.$subf\? \| \.\"$connection\"\[\]\' $DATADIR/connections.json)
+	  getoldvalues=(jq -r \'\. \| \.$fold \| \.$subf \| \.\"$connection\"\[\]\' $DATADIR/connections.json)
 	  mapfile -t oldvalues < <(eval ${getoldvalues[@]})
 	  echo editing connection $(join_by @ $connection $subfolder $folder)
 	  echo
@@ -286,20 +285,20 @@ adm(){
 	    mapfile -t subfolders < <(eval ${getsubfolders[@]})
 		if [ -z $(isinarray $subfolder ${subfolders[@]}) ]; then invalid 23 $subfolder $folder; fi
 	  fi
-	  getconnections=(jq -r \'\. \? \| \.$fold \? \| \.$subf \? \| \. as \$object\ \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"connection\"\)\?\' $DATADIR/connections.json)
+	  getconnections=(jq -r \'\. \| \.$fold \| \.$subf \| \. as \$object\ \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"connection\"\)\?\' $DATADIR/connections.json)
 	  mapfile -t connections < <(eval ${getconnections[@]})
-	  geteverything=(jq -r \'\. \? \| \.$fold \? \| \.$subf \? \| \. as \$object\ \| keys\[\] \' $DATADIR/connections.json)
+	  geteverything=(jq -r \'\. \| \.$fold \| \.$subf \| \. as \$object\ \| keys\[\] \' $DATADIR/connections.json)
 	  mapfile -t everything < <(eval ${geteverything[@]})
 	  if [ -z $(isinarray $oldconnection ${connections[@]}) ]; then invalid 24 $(join_by @ $oldconnection $subfolder $folder); fi
 	  if [ ! -z $(isinarray $newconnection ${everything[@]}) ]; then invalid 20 $(join_by @ $newconnection $subfolder $folder); fi
 	  case $# in
 		3)
-		jq -r "with_entries(if .key == \"$oldconnection\" then .key = \"$newconnection\" else . end)" $DATADIR/connections.json #> $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
+		jq -r "with_entries(if .key == \"$oldconnection\" then .key = \"$newconnection\" else . end)" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
 		;;
 		4)
 		sub="$(jq -c ".\"$folder\" | with_entries(if .key == \"$oldconnection\" then .key = \"$newconnection\" else . end)" $DATADIR/connections.json)"
 		sub=${sub:1:-1}
-		jq -r ". | . + {\"$folder\":{$sub}}" $DATADIR/connections.json #> $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
+		jq -r ". | . + {\"$folder\":{$sub}}" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
 		;;
 		5)
 		sub="$(jq -c ".\"$folder\" | .\"$subfolder\" | with_entries(if .key == \"$oldconnection\" then .key = \"$newconnection\" else . end)" $DATADIR/connections.json)"

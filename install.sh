@@ -19,6 +19,7 @@ install -m 755 "conn" /usr/local/bin/
 for file in .conn/*;do
     install -m 755 "$file" /usr/local/bin/.conn
 done
+echo "Install complete"
 ;;
 --local)
 IFS=':'
@@ -29,6 +30,7 @@ for directory in $PATH; do
 		for file in .conn/*;do
 			install -m 755 "$file" $directory/.conn
 		done
+		echo "Install complete"
 		exit 1
 	else 
 		
@@ -39,11 +41,12 @@ for directory in $PATH; do
 			install -m 755 "$file" $HOME/bin/.conn
 		done
 		echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+		echo "Install complete"
 		exit 1
     fi
 done
 ;;
 *)
-	echo "invalid argument"
+	echo "Invalid argument"
 	;;
 esac
