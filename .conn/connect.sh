@@ -34,7 +34,7 @@ if [ $# -eq 1 ]; then
 		if [ ${#ADDR[@]} -le 3 ]; then
 			if [ ! -z ${ADDR[2]} ];	then fold2=\"${ADDR[2]}\"; fi
 			if [ ! -z ${ADDR[1]} ];	then fold1=\"${ADDR[1]}\"; fi
-			getconnections=(jq -r \'\. \| \.$fold2 \| \.$fold1 \| paths \| select\(\.\[-1\] \=\= \"${ADDR[0]}\"\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
+			getconnections=(jq -r \'\. \| \.$fold2 \| \.$fold1 \| paths as \$path \| select\(getpath\(\$path\) \=\= \"connection\"\) \| \$path \| select\(\.\[-2\] \=\= \"${ADDR[0]}\"\) \| \$path \|  map\(select\(\. \!\= \"type\"\)\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
 			mapfile -t connections < <(eval ${getconnections[@]})
 			if [ ${#connections[@]} -eq 0 ]; then invalid 24 $1 ; fi
 			if [ ${#connections[@]} -eq 1 ]; then
