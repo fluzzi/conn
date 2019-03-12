@@ -150,7 +150,6 @@ then
 			fi
 			if [ $# -ge 4 ]
 			 then
-				echo aca
 				invalid 3 
 			fi
 			if [ $# -eq 3 ]
@@ -196,6 +195,16 @@ then
 						fi ;;
 				esac
 			fi;;
+		list|ls)
+            if [ $# -eq 1 ]
+			 then
+				adm list
+			else
+			  if [ $# -ge 2 ]
+			   then
+				invalid 3
+			  fi
+			fi ;;
 		help)
 			help global ;;
         folder)
@@ -323,6 +332,8 @@ then
 				case $2 in
 					""|help)
 						help profile ;;
+					list|ls)
+						profile list;;
 					mod|modify|edit|add|del|delete|rem|remove|rm)
 						invalid 2 ;;
 					*)
@@ -332,6 +343,8 @@ then
 			 if [ $# -eq 3 ]
 			  then
 				case $2 in
+					list|ls)
+						invalid 3;;
 					add)
 						case $3 in
 							$names)
@@ -378,7 +391,7 @@ then
 				case $2 in
 					""|help)
 						help profile ;;
-					mod|modify|edit|add|del|delete|rem|remove|rm)
+					mod|modify|edit|add|del|delete|rem|remove|rm|ls|list)
 						invalid 3 ;;
 					*)
 						invalid 1 ;;

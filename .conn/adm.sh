@@ -311,4 +311,7 @@ adm(){
 	  echo
 	  echo Connection \"$(join_by @ $oldconnection $subfolder $folder)\" renamed to \"$newconnection\"
   exit 1; fi
+  if [ $1 = "list" ]; then 
+	jq -r 'paths as $path | select(getpath($path) == "connection") | $path |  map(select(. != "type")) | join("@")' $DATADIR/connections.json
+  fi
 }

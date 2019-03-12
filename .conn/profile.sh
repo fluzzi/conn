@@ -161,4 +161,7 @@ profile(){
 		echo Profile \"$profile\" edited correctly
 	  fi
   exit 1; fi
+  if [ $1 = "list" ]; then 
+	jq -r 'keys[]' $DATADIR/profiles.json
+  fi
 }
