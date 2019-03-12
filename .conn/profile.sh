@@ -149,7 +149,7 @@ profile(){
 	  else
 	      logs=${oldvalues[5]}
 	  fi
-	  newvalues=($protocol $port $user $password $options $logs)
+	  newvalues=("$protocol" "$port" "$user" "$password" "$options" "$logs")
 	  old=${oldvalues[@]}
 	  new=${newvalues[@]}
 	  if [ "$old" == "$new" ] ; then

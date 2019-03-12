@@ -16,9 +16,10 @@ invalid(){
   if [ $1 -eq 13 ]; then echo Profile \"$2\" is being used by a connection; exit 1; fi
   # errors for folders and connections
   if [ $1 -eq 20 ]; then echo Folder or connection \"$2\" already exist; exit 1; fi
-  if [ $1 -eq 21 ]; then echo subfolder or connection \"$2\@$3\" already exist; exit 1; fi
-  if [ $1 -eq 22 ]; then echo folder \"$2\" do not exist; exit 1; fi
-  if [ $1 -eq 23 ]; then echo subfolder \"$2\@$3\" do not exist; exit 1; fi
-  if [ $1 -eq 24 ]; then echo connection \"$2\" do not exist; exit 1; fi
-  if [ $1 -eq 25 ]; then echo invalid address \"$2\"; exit 1; fi
+  if [ $1 -eq 21 ]; then echo Subfolder or connection \"$2\@$3\" already exist; exit 1; fi
+  if [ $1 -eq 22 ]; then echo Folder \"$2\" do not exist; exit 1; fi
+  if [ $1 -eq 23 ]; then echo Subfolder \"$2\@$3\" do not exist; exit 1; fi
+  if [ $1 -eq 24 ]; then echo Connection \"$2\" do not exist; exit 1; fi
+  if [ $1 -eq 25 ]; then echo Invalid address \"$2\"; exit 1; fi
+  if [ $1 -eq 26 ]; then echo No connections found, try: conn help; exit 1; fi
 }

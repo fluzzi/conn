@@ -53,11 +53,15 @@ adm(){
 	  echo you can use the configured setting in a profile using @profilename
 	  echo if your password start with @, you can duplicate the @ to escape profile names. 
 	  echo Example: @@password will work as @password and not a profile name
-	  echo -n Password:
-	  read -s password
-	  if [ ! -z $password ] && ( [[ ! $password =~ (^@.+$) ]] || [[ $password =~ (^@@.+$) ]] ); then
-	  if [[ $password =~ (^@@.+$) ]]; then password=${password:1}; fi
-	  password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`; fi
+	  while true; do
+	      echo -n Password:
+		  read -s password
+		  this=${password:1};
+		  if [[ $password =~ (^@.+$) ]] && [[ ! $password =~ (^@@.+$) ]] && [ -z $(isinarray $this ${allprofiles[@]}) ]; then echo; echo profile $this not found, please try again; echo;
+		  elif [ ! -z $password ] && ( [[ ! $password =~ (^@.+$) ]] || [[ $password =~ (^@@.+$) ]] ); then
+			if [[ $password =~ (^@@.+$) ]]; then password=${password:1}; fi
+			password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`;break; else break; echo; fi
+	  done
 	  echo 
 	  echo
 	  echo do you want to set other options for this connection? if not, please leave empty
@@ -199,11 +203,15 @@ adm(){
 		  echo you can use the configured setting in a profile using @profilename
 		  echo if your password start with @, you can duplicate the @ to escape profile names. 
 		  echo Example: @@password will work as @password and not a profile name
-		  echo -n Password:
-		  read -s password
-		  if [ ! -z $password ] && ( [[ ! $password =~ (^@.+$) ]] || [[ $password =~ (^@@.+$) ]] ); then
-		  if [[ $password =~ (^@@.+$) ]]; then password=${password:1}; fi
-		  password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`; fi
+		  while true; do
+			  echo -n Password:
+			  read -s password
+			  this=${password:1}
+			  if [[ $password =~ (^@.+$) ]] && [[ ! $password =~ (^@@.+$) ]] && [ -z $(isinarray $this ${allprofiles[@]}) ]; then echo; echo profile $this not found, please try again; echo;
+			  elif [ ! -z $password ] && ( [[ ! $password =~ (^@.+$) ]] || [[ $password =~ (^@@.+$) ]] ); then
+				if [[ $password =~ (^@@.+$) ]]; then password=${password:1}; fi
+				password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`;break; else break; echo; fi
+		  done
 	  else
 	      password=${oldvalues[5]}
 	  fi
@@ -233,7 +241,7 @@ adm(){
 	  else
 	      logs=${oldvalues[7]}
 	  fi
-	  newvalues=(${oldvalues[0]} $host $protocol $port $user $password $options $logs)
+	  newvalues=("${oldvalues[0]}" "$host" "$protocol" "$port" "$user" "$password" "$options" "$logs")
 	  old=${oldvalues[@]}
 	  new=${newvalues[@]}
 	  if [ "$old" == "$new" ] ; then

@@ -7,3 +7,4 @@ args=( )
 flag=0
 flags=
 arguments=(type host protocol port user password options logs)
+mapfile -t allprofiles < <(jq -r 'keys[]' $DATADIR/profiles.json)

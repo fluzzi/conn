@@ -8,13 +8,14 @@ if [ $# -eq 0 ] || ( [ $# -eq 1 ] && [[ $1 =~ ^@.*$ ]] && [[ ! $1 =~ ^.*@$ ]] &&
 		if [ ! -z ${ADDR[1]} ];	then fold1=\"${ADDR[1]}\"; fi
 		getconnections=(jq -r \'\.  \| \.$fold2  \| \.$fold1  \| paths as \$path \| select\(getpath\(\$path\) \=\= \"connection\"\) \| \$path \|  map\(select\(\. \!\= \"type\"\)\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
 		mapfile -t connections < <(eval ${getconnections[@]})
+		if [ ${#connections[@]} -eq 0 ] && [ $# -eq 0 ] ; then invalid 26 ; fi
 		if [ ${#connections[@]} -eq 0 ]; then invalid 25 $1 ; fi
 		for i in ${!connections[@]}; do
 		con=$(split_by ${connections[$i]} "@" -r)
 		con="$(join_by "@" ${connections[$i]})"
 		echo "$(($i + 1)) - $con"
 		done
-		inputrange Port 1 $((i + 1))
+		inputrange Connection 1 $((i + 1))
 		if [[ ! $valuerange =~ (^[0-9]+$) ]] ; then
 			exit 1
 		else 
@@ -45,7 +46,7 @@ if [ $# -eq 1 ]; then
 				con="$(join_by "@" ${connections[$i]})"
 				echo "$(($i + 1)) - $con"
 				done
-				inputrange Port 1 $((i + 1))
+				inputrange Connection 1 $((i + 1))
 				if [[ ! $valuerange =~ (^[0-9]+$) ]] ; then
 					exit 1
 				else 
@@ -99,7 +100,7 @@ else       # Reset in case getopts has been used previously in the shell.
 					con="$(join_by "@" ${connections[$i]})"
 					echo "$(($i + 1)) - $con"
 					done
-					inputrange Port 1 $((i + 1))
+					inputrange Connection 1 $((i + 1))
 					if [[ ! $valuerange =~ (^[0-9]+$) ]] ; then
 						exit 1
 					else 

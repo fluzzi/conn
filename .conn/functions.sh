@@ -11,7 +11,9 @@ done
 inputregex(){
   while true; do
 	read -p  "$1: "  valueregex
+	this=${valueregex#?}
 	if [[ ! $valueregex =~ $2 ]]; then echo wrong input, please try again;
+	elif [[ $valueregex =~ (^@.+$) ]] && [ -z $(isinarray $this ${allprofiles[@]}) ]; then echo profile $this not found, please try again;
 	  else
 		break
 	  fi
@@ -20,10 +22,12 @@ inputregex(){
 inputrange(){
   while true; do
 	read -p "$1: "  valuerange
+	this=${valuerange#?}
 	if ([ ! $valuerange -ge "$2" ] &> /dev/null || [ ! $valuerange -le "$3" ] &> /dev/null ) || ([ ! -z $valuerange ] && [[ ! $valuerange =~ (^@.+$) ]] && [[ ! $valuerange =~ (^[0-9]+$) ]]); then echo wrong input, please try again;
-	  else
+	elif [[ $valuerange =~ (^@.+$) ]] && [ -z $(isinarray $this ${allprofiles[@]}) ]; then echo profile $this not found, please try again;
+	else
 		break
-	  fi
+	 fi
   done
 }
 modify(){
