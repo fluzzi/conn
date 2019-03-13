@@ -1,6 +1,7 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DATADIR=$HOME/.conn
+SCRIPT_NAME="$(basename "$0")"
 source $DIR/.conn/firstrun.sh
 if [ ! -f $DATADIR/.osk ]; then firstrun; fi
 source $DATADIR/config
@@ -31,10 +32,10 @@ then
 			 if [ $# -eq 2 ]
 			  then
 				case $2 in
-					$names)
-						invalid 4 ;;
 					help)
 						help add ;;
+					$names)
+						invalid 4 ;;
 					*)
 						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]]; then
 							IFS='@' read -ra ADDR <<< $2
@@ -71,10 +72,10 @@ then
 			 if [ $# -eq 2 ]
 			  then
 				case $2 in
-					$names)
-						invalid 4 ;;
 					help)
 						help del ;;
+					$names)
+						invalid 4 ;;
 					*)
 						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]]; then
 							IFS='@' read -ra ADDR <<< $2
@@ -111,10 +112,10 @@ then
 			 if [ $# -eq 2 ]
 			  then
 				case $2 in
-					$names)
-						invalid 4 ;;
 					help)
 						help edit ;;
+					$names)
+						invalid 4 ;;
 					*)
 						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]]; then
 							IFS='@' read -ra ADDR <<< $2
@@ -144,9 +145,13 @@ then
 			 fi
 			fi ;;
 		ren|rename)
-			if [ $# -le 2 ]
-			 then
-				invalid 2
+			if [ $# -le 2 ]; then
+				case $2 in
+				help)
+					help ren;;
+				*)
+					invalid 2;;
+				esac
 			fi
 			if [ $# -ge 4 ]
 			 then
@@ -155,10 +160,10 @@ then
 			if [ $# -eq 3 ]
 			 then
 				case $2 in
+					help)
+						invalid 3 ;;
 					$names)
 						invalid 4 ;;
-					help)
-						help ren ;;
 					*)
 						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]] &&  [[ ! $3 =~ [^$validfile] ]]; then
 						IFS='@' read -ra ADDR <<< $2
@@ -211,6 +216,12 @@ then
 			case $2 in
 				""|help)
 					help folder ;;
+				ls|list)
+					if [ $# -eq 2 ]; then
+						folder list
+					else
+						invalid 3
+					fi;;
 				rename|ren|add|del|delete|rem|remove|rm)
 					if [ $# -eq 2 ]
 					then
@@ -221,10 +232,10 @@ then
 						case $2 in
 							add)
 								case $3 in
-									$names)
-										invalid 4 ;;
 									help)
 										help folder-add ;;
+									$names)
+										invalid 4 ;;
 									*)
 										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] && [[ ! $3 =~ ^.*@@.*$ ]]; then
 										IFS='@' read -ra ADDR <<< $3
@@ -246,10 +257,10 @@ then
 								esac ;;
 							del|delete|rem|remove|rm)
 								case $3 in
-									$names)
-										invalid 4 ;;
 									help)
 										help folder-del ;;
+									$names)
+										invalid 4 ;;
 									*)
 										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] && [[ ! $3 =~ ^.*@@.*$ ]]; then
 										IFS='@' read -ra ADDR <<< $3
@@ -275,21 +286,22 @@ then
 									help folder-ren ;;
 								*)
 									invalid 2 ;;
-							esac
-							;;
+								list|ls)
+									invalid 3;;
+							esac;;
 					esac
 					fi
 					if [ $# -eq 4 ]
 					then
 						case $2 in
-							add|del|delete|rem|remove|rm)
+							add|del|delete|rem|remove|rm|ls|list)
 								invalid 3 ;;
 							ren|rename)
 								case $3 in
+									help)
+										invalid 3 ;;
 									$names)
 										invalid 4 ;;
-									help)
-										help folder-ren ;;
 									*)
 										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] && [[ ! $3 =~ ^.*@@.*$ ]] &&  [[ ! $4 =~ [^$validfile] ]]; then
 										IFS='@' read -ra ADDR <<< $3
@@ -343,14 +355,12 @@ then
 			 if [ $# -eq 3 ]
 			  then
 				case $2 in
-					list|ls)
-						invalid 3;;
 					add)
 						case $3 in
-							$names)
-								invalid 4 ;;
 							help)
 								help profile-add ;;
+							$names)
+								invalid 4 ;;						
 							*)
 							if [[ ! $3 =~ [^$validfile] ]]; then
 								profile add $3
@@ -360,10 +370,10 @@ then
 						esac ;;
 					del|delete|rem|remove|rm)
 						case $3 in
-							$names)
-								invalid 4 ;;
 							help)
 								help profile-del ;;
+							$names)
+								invalid 4 ;;
 							*)
 							if [[ ! $3 =~ [^$validfile] ]]; then
 								profile del $3
@@ -373,10 +383,10 @@ then
 						esac ;;
 					mod|modify|edit)
 						case $3 in
-							$names)
-								invalid 4 ;;
 							help)
 								help profile-edit ;;
+							$names)
+								invalid 4 ;;
 							*)
 							if [[ ! $3 =~ [^$validfile] ]]; then
 								profile mod $3
@@ -384,6 +394,12 @@ then
 								invalid 5
 							fi ;;
 						esac ;;
+					list|ls)
+						invalid 3;;
+					help)
+						help profile ;;
+					*) 
+						invalid 1;;
 				esac
 			 else	
 			  if [ $# -eq 4 ]
@@ -391,7 +407,7 @@ then
 				case $2 in
 					""|help)
 						help profile ;;
-					mod|modify|edit|add|del|delete|rem|remove|rm|ls|list)
+					mod|modify|edit|add|del|delete|rem|remove|rm|ls|list|help)
 						invalid 3 ;;
 					*)
 						invalid 1 ;;
