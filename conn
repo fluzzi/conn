@@ -32,7 +32,7 @@ then
 			 if [ $# -eq 2 ]
 			  then
 				case $2 in
-					help)
+					help|-h|--help)
 						help add ;;
 					$names)
 						invalid 4 ;;
@@ -72,7 +72,7 @@ then
 			 if [ $# -eq 2 ]
 			  then
 				case $2 in
-					help)
+					help|-h|--help)
 						help del ;;
 					$names)
 						invalid 4 ;;
@@ -112,7 +112,7 @@ then
 			 if [ $# -eq 2 ]
 			  then
 				case $2 in
-					help)
+					help|-h|--help)
 						help edit ;;
 					$names)
 						invalid 4 ;;
@@ -147,7 +147,7 @@ then
 		ren|rename)
 			if [ $# -le 2 ]; then
 				case $2 in
-				help)
+				help|-h|--help)
 					help ren;;
 				*)
 					invalid 2;;
@@ -160,7 +160,7 @@ then
 			if [ $# -eq 3 ]
 			 then
 				case $2 in
-					help)
+					help|-h|--help)
 						invalid 3 ;;
 					$names)
 						invalid 4 ;;
@@ -210,11 +210,11 @@ then
 				invalid 3
 			  fi
 			fi ;;
-		help)
+		help|-h|--help)
 			help global ;;
         folder)
 			case $2 in
-				""|help)
+				""|help|-h|--help)
 					help folder ;;
 				ls|list)
 					if [ $# -eq 2 ]; then
@@ -232,7 +232,7 @@ then
 						case $2 in
 							add)
 								case $3 in
-									help)
+									help|-h|--help)
 										help folder-add ;;
 									$names)
 										invalid 4 ;;
@@ -257,7 +257,7 @@ then
 								esac ;;
 							del|delete|rem|remove|rm)
 								case $3 in
-									help)
+									help|-h|--help)
 										help folder-del ;;
 									$names)
 										invalid 4 ;;
@@ -282,7 +282,7 @@ then
 								esac ;;
 						ren|rename)
 							case $3 in
-								help)
+								help|-h|--help)
 									help folder-ren ;;
 								*)
 									invalid 2 ;;
@@ -298,7 +298,7 @@ then
 								invalid 3 ;;
 							ren|rename)
 								case $3 in
-									help)
+									help|-h|--help)
 										invalid 3 ;;
 									$names)
 										invalid 4 ;;
@@ -342,7 +342,7 @@ then
 			if [ $# -le 2 ]
 			 then
 				case $2 in
-					""|help)
+					""|help|-h|--help)
 						help profile ;;
 					list|ls)
 						profile list;;
@@ -357,7 +357,7 @@ then
 				case $2 in
 					add)
 						case $3 in
-							help)
+							help|-h|--help)
 								help profile-add ;;
 							$names)
 								invalid 4 ;;						
@@ -370,7 +370,7 @@ then
 						esac ;;
 					del|delete|rem|remove|rm)
 						case $3 in
-							help)
+							help|-h|--help)
 								help profile-del ;;
 							$names)
 								invalid 4 ;;
@@ -383,7 +383,7 @@ then
 						esac ;;
 					mod|modify|edit)
 						case $3 in
-							help)
+							help|-h|--help)
 								help profile-edit ;;
 							$names)
 								invalid 4 ;;
@@ -396,7 +396,7 @@ then
 						esac ;;
 					list|ls)
 						invalid 3;;
-					help)
+					help|-h|--help)
 						help profile ;;
 					*) 
 						invalid 1;;
@@ -405,9 +405,9 @@ then
 			  if [ $# -eq 4 ]
 			  then
 				case $2 in
-					""|help)
+					""|help|-h|--help)
 						help profile ;;
-					mod|modify|edit|add|del|delete|rem|remove|rm|ls|list|help)
+					mod|modify|edit|add|del|delete|rem|remove|rm|ls|list)
 						invalid 3 ;;
 					*)
 						invalid 1 ;;

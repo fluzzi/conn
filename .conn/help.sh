@@ -6,7 +6,7 @@ help(){
   echo "   $SCRIPT_NAME folder del|rm|remove <[subfolder@]folder>"
   echo "   $SCRIPT_NAME folder ren|rename <[subfolder@]folder> <new_[sub]folder_name>" 
   echo "   $SCRIPT_NAME folder ls|list"
-  echo "   $SCRIPT_NAME folder [help]"
+  echo "   $SCRIPT_NAME folder [help|-h|--help]"
   echo
   echo "Examples:"
   echo "   $SCRIPT_NAME folder add office"
@@ -52,7 +52,7 @@ help(){
   echo "   $SCRIPT_NAME profile del|rm|remove <profile_name>"
   echo "   $SCRIPT_NAME profile mod|modify|edit <profile_name>"
   echo "   $SCRIPT_NAME profile ls|list"
-  echo "   $SCRIPT_NAME profile [help]"
+  echo "   $SCRIPT_NAME profile [help|-h|--help]"
   echo
   echo "Examples:"
   echo "   $SCRIPT_NAME profile add office-user"
@@ -172,7 +172,7 @@ help(){
   echo "               -s              : Clear connection password."
   echo    
   echo "   Generic commands:"  
-  echo "   $SCRIPT_NAME [command1] [command2] help"
+  echo "   $SCRIPT_NAME [command1] [command2] <help|-h|--help>"
   echo "   $SCRIPT_NAME --allow-uppercase <true/false>"
   echo "        default is <false>"
   echo
