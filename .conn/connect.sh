@@ -135,6 +135,7 @@ if [ $protocol = "ssh" ]; then
 	\"(yes/no)\" { send \"yes\r\";exp_continue}\
 	\"refused\" { exit 1}\
 	\"supported\" { exit 1}\
+	\"cipher\" { exit 1}\
 	\"sage:\" { exit 1}\
 	\"timeout\" { puts  \"connection timeout\"; exit 1}\
 	\"unavailable\" { puts \"connection timeout\"; exit 1}\

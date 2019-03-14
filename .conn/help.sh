@@ -60,7 +60,22 @@ help(){
   echo "   $SCRIPT_NAME profile del office-user"
   echo
   exit 1; fi
-  if [ $1 = "profile-add" ]; then echo help profile add; exit 1; fi
+  if [ $1 = "profile-add" ]; then 
+  echo
+  echo "Usage:" 
+  echo "   $SCRIPT_NAME profile add <profile>"
+  echo "        It will request the parameters of the profile. Any parameter can be empty"
+  echo     
+  echo "        Available parameters:"
+  echo "               protocol        : Protocol to use on the connection. <telnet|ssh>"
+  echo "               port            : Port to use for the connection. <1-65535>"
+  echo "               user            : username to use on the connection. <youruser>"
+  echo "               password        : password to use on the connection, stored encrypted.<pass>"
+  echo "               options         : Options to pass to the protocol. Ex. <\"-X -c aes128-cbc\">"
+  echo "               logs            : Location to store the connection logs. You can use date command."
+  echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log>"
+  echo
+  exit 1; fi
   if [ $1 = "profile-del" ]; then 
   echo
   echo "Usage:" 
@@ -70,8 +85,41 @@ help(){
   echo "   $SCRIPT_NAME profile rm office-user"
   echo
   exit 1; fi
-  if [ $1 = "profile-edit" ]; then echo help profile edit; exit 1; fi
-  if [ $1 = "add" ]; then echo help add; exit 1; fi
+  if [ $1 = "profile-edit" ]; then 
+  echo
+  echo "Usage:" 
+  echo "   $SCRIPT_NAME profile mod|modify|edit <profile>"
+  echo "        It will ask if you want to change the parameters of the profile."
+  echo     
+  echo "        Available parameters:"
+  echo "               protocol        : Protocol to use on the connection. <telnet|ssh>"
+  echo "               port            : Port to use for the connection. <1-65535>"
+  echo "               user            : username to use on the connection. <youruser>"
+  echo "               password        : password to use on the connection, stored encrypted.<pass>"
+  echo "               options         : Options to pass to the protocol. Ex. <\"-X -c aes128-cbc\">"
+  echo "               logs            : Location to store the connection logs. You can use date command."
+  echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log>"
+  echo
+  exit 1; fi
+  if [ $1 = "add" ]; then 
+  echo
+  echo "Usage:" 
+  echo "   $SCRIPT_NAME add <connection[@subfolder][@folder]>"
+  echo "        It will request the parameters of the connection."
+  echo "        Any optional parameter can be empty or linked to a profile using: <@profile_name>"
+  echo     
+  echo "        Mandatory parameters:"  
+  echo "               host            : IP or hostname of the device."
+  echo "        Optional parameters:"
+  echo "               protocol        : Protocol to use on the connection. <telnet|ssh|@profile>"
+  echo "               port            : Port to use for the connection. <1-65535|@profile>"
+  echo "               user            : username to use on the connection. <youruser|@profile>"
+  echo "               password        : password to use on the connection, stored encrypted.<pass|@profile>"
+  echo "               options         : Options to pass to the protocol. Ex. <\"-X -c aes128-cbc\"|@profile>"
+  echo "               logs            : Location to store the connection logs. You can use date command."
+  echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
+  echo
+  exit 1; fi
   if [ $1 = "del" ]; then 
   echo
   echo "Usage:" 
@@ -82,7 +130,23 @@ help(){
   echo "   $SCRIPT_NAME del server"
   echo
   exit 1; fi
-  if [ $1 = "edit" ]; then echo help edit; exit 1; fi
+  if [ $1 = "edit" ]; then 
+  echo
+  echo "Usage:" 
+  echo "   $SCRIPT_NAME mod|modify|edit <connection[@subfolder][@folder]>"
+  echo "        It will ask if you want to change the parameters of the connection."
+  echo     
+  echo "        Available parameters:"
+  echo "               host            : IP or hostname of the device."
+  echo "               protocol        : Protocol to use on the connection. <telnet|ssh|@profile>"
+  echo "               port            : Port to use for the connection. <1-65535|@profile>"
+  echo "               user            : username to use on the connection. <youruser|@profile>"
+  echo "               password        : password to use on the connection, stored encrypted.<pass|@profile>"
+  echo "               options         : Options to pass to the protocol. Ex. <\"-X -c aes128-cbc\"|@profile>"
+  echo "               logs            : Location to store the connection logs. You can use date command."
+  echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
+  echo
+  exit 1; fi
   if [ $1 = "ren" ]; then 
     echo
   echo "Usage:" 
@@ -108,7 +172,7 @@ help(){
   echo "               -s              : Clear connection password."
   echo    
   echo "   Generic commands:"  
-  echo "   $SCRIPT_NAME [command] help"
+  echo "   $SCRIPT_NAME [command1] [command2] help"
   echo "   $SCRIPT_NAME --allow-uppercase <true/false>"
   echo "        default is <false>"
   echo
