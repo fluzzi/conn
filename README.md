@@ -32,15 +32,15 @@ End with an example of getting some data out of the system or using it for a lit
 
 ### Usage
 ```
-   conn connection_name[@subfolder][@folder] [-override_options]
+####    conn connection_name[@subfolder][@folder] [-override_options]
          recursively search in folders and subfolders if not specified
 		 
-   conn [@subfolder][@folder]
+####    conn [@subfolder][@folder]
          show all available connections globaly or in specified path
 ```
 
 ```    
-        Override options:
+####         Override options:
                -l <username>   : Override connection user.
                -p <port>       : Override connection port.
                -P <protocol>   : Override connection protocol.
@@ -49,14 +49,14 @@ End with an example of getting some data out of the system or using it for a lit
 ```  
 
 ```  
-   Generic commands:  
+####    Generic commands:  
    conn [command1] [command2] <help|-h|--help>
    conn --allow-uppercase <true/false>
         default is <false>
 ```
 
 ```    
-   Manage connections:  
+####    Manage connections:  
    conn add <connection[@subfolder][@folder]>
    conn del|rm|remove <connection[@subfolder][@folder]>
    conn mod|modify|edit <connection[@subfolder][@folder]>
@@ -65,7 +65,7 @@ End with an example of getting some data out of the system or using it for a lit
 ```   
 
 ``` 
-   Manage folders:  
+ ####   Manage folders:  
    conn folder add <[subfolder@]folder>
    conn folder del|rm|remove <[subfolder@]folder>
    conn folder ren|rename <[subfolder@]folder> <new_[sub]folder_name> 
@@ -73,7 +73,7 @@ End with an example of getting some data out of the system or using it for a lit
 ```
  
 ```   
-   Manage profiles:  
+ ####   Manage profiles:  
    conn profile add <profile_name>
    conn profile del|rm|remove <profile_name>
    conn profile mod|modify|edit <profile_name>
@@ -81,7 +81,7 @@ End with an example of getting some data out of the system or using it for a lit
 ``` 
  
 ```  
-Examples:
+#### Examples:
    conn profile add office-user
    conn folder add office
    conn folder add datacenter@office
