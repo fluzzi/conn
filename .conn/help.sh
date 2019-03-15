@@ -51,6 +51,7 @@ help(){
   echo "   $SCRIPT_NAME profile add <profile_name>"
   echo "   $SCRIPT_NAME profile del|rm|remove <profile_name>"
   echo "   $SCRIPT_NAME profile mod|modify|edit <profile_name>"
+  echo "   $SCRIPT_NAME profile show <profile_name>"
   echo "   $SCRIPT_NAME profile ls|list"
   echo "   $SCRIPT_NAME profile <help|-h|--help>"
   echo
@@ -198,6 +199,7 @@ help(){
   echo "   $SCRIPT_NAME del|rm|remove <connection[@subfolder][@folder]>"
   echo "   $SCRIPT_NAME mod|modify|edit <connection[@subfolder][@folder]>"
   echo "   $SCRIPT_NAME ren|rename <connection[@subfolder][@folder]> <new_connection_name>"
+  echo "   $SCRIPT_NAME show <connection[@subfolder][@folder]>"
   echo "   $SCRIPT_NAME ls|list"
   echo
   echo "   Manage folders:"  
@@ -210,6 +212,7 @@ help(){
   echo "   $SCRIPT_NAME profile add <profile_name>"
   echo "   $SCRIPT_NAME profile del|rm|remove <profile_name>"
   echo "   $SCRIPT_NAME profile mod|modify|edit <profile_name>"
+  echo "   $SCRIPT_NAME profile show <profile_name>"
   echo "   $SCRIPT_NAME profile ls|list"
   echo
   echo "Examples:"
@@ -218,6 +221,7 @@ help(){
   echo "   $SCRIPT_NAME folder add datacenter@office"
   echo "   $SCRIPT_NAME add server@datacenter@office"
   echo "   $SCRIPT_NAME add pc@office"
+  echo "   $SCRIPT_NAME show server@datacenter@office"
   echo "   $SCRIPT_NAME pc"
   echo "   $SCRIPT_NAME server@office"
   echo "   $SCRIPT_NAME server -l root"
