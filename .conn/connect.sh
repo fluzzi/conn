@@ -12,7 +12,7 @@ if [ $# -eq 0 ] || ( [ $# -eq 1 ] && [[ $1 =~ ^@.*$ ]] && [[ ! $1 =~ ^.*@$ ]] &&
 		if [ ${#connections[@]} -eq 0 ]; then invalid 25 $1 ; fi
 		for i in ${!connections[@]}; do
 		con=$(split_by ${connections[$i]} "@" -r)
-		con="$(join_by "@" ${connections[$i]})"
+		con="$(join_by "@" $con)"
 		echo "$(($i + 1)) - $con"
 		done
 		inputrange Connection 1 $((i + 1))
