@@ -32,9 +32,10 @@ End with an example of getting some data out of the system or using it for a lit
 
 ### Usage
 ```
-   $SCRIPT_NAME connection_name[@subfolder][@folder] [-override_options]
+   conn connection_name[@subfolder][@folder] [-override_options]
          recursively search in folders and subfolders if not specified
-   $SCRIPT_NAME [@subfolder][@folder]
+		 
+   conn [@subfolder][@folder]
          show all available connections globaly or in specified path
 ```   
         Override options:
@@ -43,37 +44,37 @@ End with an example of getting some data out of the system or using it for a lit
                -P <protocol>   : Override connection protocol.
                -o \"<options>\"  : Override connection protocol options
                -s              : Clear connection password.
-  
+```   
    Generic commands:  
-   $SCRIPT_NAME [command1] [command2] <help|-h|--help>
-   $SCRIPT_NAME --allow-uppercase <true/false>
+   conn [command1] [command2] <help|-h|--help>
+   conn --allow-uppercase <true/false>
         default is <false>
-
+```   
    Manage connections:  
-   $SCRIPT_NAME add <connection[@subfolder][@folder]>
-   $SCRIPT_NAME del|rm|remove <connection[@subfolder][@folder]>
-   $SCRIPT_NAME mod|modify|edit <connection[@subfolder][@folder]>
-   $SCRIPT_NAME ren|rename <connection[@subfolder][@folder]> <new_connection_name>
-   $SCRIPT_NAME ls|list
-
+   conn add <connection[@subfolder][@folder]>
+   conn del|rm|remove <connection[@subfolder][@folder]>
+   conn mod|modify|edit <connection[@subfolder][@folder]>
+   conn ren|rename <connection[@subfolder][@folder]> <new_connection_name>
+   conn ls|list
+```   
    Manage folders:  
-   $SCRIPT_NAME folder add <[subfolder@]folder>
-   $SCRIPT_NAME folder del|rm|remove <[subfolder@]folder>
-   $SCRIPT_NAME folder ren|rename <[subfolder@]folder> <new_[sub]folder_name> 
-   $SCRIPT_NAME folder ls|list
-
+   conn folder add <[subfolder@]folder>
+   conn folder del|rm|remove <[subfolder@]folder>
+   conn folder ren|rename <[subfolder@]folder> <new_[sub]folder_name> 
+   conn folder ls|list
+```   
    Manage profiles:  
-   $SCRIPT_NAME profile add <profile_name>
-   $SCRIPT_NAME profile del|rm|remove <profile_name>
-   $SCRIPT_NAME profile mod|modify|edit <profile_name>
-   $SCRIPT_NAME profile ls|list
-
+   conn profile add <profile_name>
+   conn profile del|rm|remove <profile_name>
+   conn profile mod|modify|edit <profile_name>
+   conn profile ls|list
+```   
 Examples:
-   $SCRIPT_NAME profile add office-user
-   $SCRIPT_NAME folder add office
-   $SCRIPT_NAME folder add datacenter@office
-   $SCRIPT_NAME add server@datacenter@office
-   $SCRIPT_NAME add pc@office
-   $SCRIPT_NAME pc
-   $SCRIPT_NAME server@office
-   $SCRIPT_NAME server -l root
+   conn profile add office-user
+   conn folder add office
+   conn folder add datacenter@office
+   conn add server@datacenter@office
+   conn add pc@office
+   conn pc
+   conn server@office
+   conn server -l root
