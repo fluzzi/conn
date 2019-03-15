@@ -38,20 +38,23 @@ End with an example of getting some data out of the system or using it for a lit
    conn [@subfolder][@folder]
          show all available connections globaly or in specified path
 ```
+
 ```    
         Override options:
                -l <username>   : Override connection user.
                -p <port>       : Override connection port.
                -P <protocol>   : Override connection protocol.
-               -o \"<options>\"  : Override connection protocol options
+               -o "<options>"  : Override connection protocol options
                -s              : Clear connection password.
 ```  
+
 ```  
    Generic commands:  
    conn [command1] [command2] <help|-h|--help>
    conn --allow-uppercase <true/false>
         default is <false>
 ```
+
 ```    
    Manage connections:  
    conn add <connection[@subfolder][@folder]>
@@ -60,20 +63,23 @@ End with an example of getting some data out of the system or using it for a lit
    conn ren|rename <connection[@subfolder][@folder]> <new_connection_name>
    conn ls|list
 ```   
+
 ``` 
    Manage folders:  
    conn folder add <[subfolder@]folder>
    conn folder del|rm|remove <[subfolder@]folder>
    conn folder ren|rename <[subfolder@]folder> <new_[sub]folder_name> 
    conn folder ls|list
-``` 
+```
+ 
 ```   
    Manage profiles:  
    conn profile add <profile_name>
    conn profile del|rm|remove <profile_name>
    conn profile mod|modify|edit <profile_name>
    conn profile ls|list
-```  
+``` 
+ 
 ```  
 Examples:
    conn profile add office-user
