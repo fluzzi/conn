@@ -57,17 +57,16 @@ End with an example of getting some data out of the system or using it for a lit
 
 ####   Manage connections:  
 ```    
-
    conn add <connection[@subfolder][@folder]>
    conn del|rm|remove <connection[@subfolder][@folder]>
    conn mod|modify|edit <connection[@subfolder][@folder]>
    conn ren|rename <connection[@subfolder][@folder]> <new_connection_name>
+   conn show <connection[@subfolder][@folder]>
    conn ls|list
 ```   
 
 ####   Manage folders:  
 ``` 
-
    conn folder add <[subfolder@]folder>
    conn folder del|rm|remove <[subfolder@]folder>
    conn folder ren|rename <[subfolder@]folder> <new_[sub]folder_name> 
@@ -76,10 +75,10 @@ End with an example of getting some data out of the system or using it for a lit
 
 ####   Manage profiles:   
 ```   
-
    conn profile add <profile_name>
    conn profile del|rm|remove <profile_name>
    conn profile mod|modify|edit <profile_name>
+   conn profile show <profile_name>
    conn profile ls|list
 ``` 
 
@@ -90,6 +89,7 @@ End with an example of getting some data out of the system or using it for a lit
    conn folder add datacenter@office
    conn add server@datacenter@office
    conn add pc@office
+   conn show server@datacenter@office
    conn pc
    conn server@office
    conn server -l root
