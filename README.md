@@ -2,7 +2,7 @@
 
 Conn is a ssh and telnet connection manager for bash.
 
-### Getting Started
+## Getting Started
 
 These instructions will get you a copy of the project up and running on your local.
 
@@ -30,7 +30,7 @@ Install for local user:
 
 End with an example of getting some data out of the system or using it for a little demo
 
-### Usage
+## Usage
 ```
    conn connection_name[@subfolder][@folder] [-override_options]
          recursively search in folders and subfolders if not specified
