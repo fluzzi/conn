@@ -96,6 +96,7 @@ if [[ $1 =~ $namesif ]]; then
 		if [[ "$args" =~ ^mod|modify|edit$ ]]; then args="mod"; fi
 		if [[ "$args" =~ ^ren|rename$ ]]; then args="ren"; fi
 		if [[ "$args" =~ ^help|-h|--help$ ]]; then args="help"; fi
+		if [[ "$args" =~ ^list|ls$ ]]; then args="list"; fi
 		if [[ "${comm[*]: -1}" =~ ^add|del|mod|ren|show|list|help$ ]] && [ ! "$args" = "help" ]; then and+=("$args"); command+=("$args"); else
 		comm+=("$args")
 		command+=("$args");	fi
