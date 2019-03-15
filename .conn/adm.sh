@@ -73,7 +73,7 @@ adm(){
 	  echo do you want to save the session logs for this connection? if not, please leave empty
 	  echo set the location and file name, you can use Date command to add timestamp
 	  echo 'you can also use the following variables ${hostname}, ${port} and ${user}'
-	  echo example: '/home/user/logs/$hostname_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
+	  echo example: '/home/user/logs/${hostname}_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 	  echo you can use the configured setting in a profile using @profilename
 	  inputregex Logging '.*'
 	  logs=$valueregex
@@ -232,7 +232,7 @@ adm(){
 		  echo do you want to save the session logs for this connection? if not, please leave empty
 		  echo set the location and file name, you can use Date command to add timestamp
 		  echo 'you can also use the following variables ${hostname}, ${port} and ${user}'
-		  echo example: '/home/user/logs/$hostname_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
+		  echo example: '/home/user/logs/${hostname}_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 		  echo you can use the configured setting in a profile using @profilename
 		  echo current options: ${oldvalues[7]}
 		  inputregex Logging '.*'
@@ -308,10 +308,30 @@ adm(){
 		jq -r ". | . + {\"$folder\":{$sub1,\"$subfolder\":{$sub}}}" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
 		;;
 	  esac
-	  echo
 	  echo Connection \"$(join_by @ $oldconnection $subfolder $folder)\" renamed to \"$newconnection\"
   exit 1; fi
   if [ $1 = "list" ]; then 
 	jq -r 'paths as $path | select(getpath($path) == "connection") | $path |  map(select(. != "type")) | join("@")' $DATADIR/connections.json
+  fi
+  if [ $1 = "show" ]; then 
+	connection=$2
+	  folder=$3
+	  subfolder=$4
+	  if [ ! -z $folder ]
+		then fold=\"$folder\" 
+		mapfile -t folders < <(jq -r '. as $object | keys[] | select($object[.].type == "folder")?' $DATADIR/connections.json)
+		if [ -z $(isinarray $folder ${folders[@]}) ]; then invalid 22 $folder; fi
+	  fi
+	  if [ ! -z $subfolder ]
+		then subf=\"$subfolder\" 
+		getsubfolders=(jq -r \'\.\"$folder\" \| \. as \$object \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"subfolder\"\)\?\' $DATADIR/connections.json)
+	    mapfile -t subfolders < <(eval ${getsubfolders[@]})
+		if [ -z $(isinarray $subfolder ${subfolders[@]}) ]; then invalid 23 $subfolder $folder; fi
+	  fi
+	  getconnections=(jq -r \'\. \| \.$fold \| \.$subf \| \. as \$object\ \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"connection\"\)\?\' $DATADIR/connections.json)
+	  mapfile -t connections < <(eval ${getconnections[@]})
+	  if [ -z $(isinarray $connection ${connections[@]}) ]; then invalid 24 $(join_by @ $connection $subfolder $folder); fi
+	  getvalues=(jq -r \'\. \| \.$fold \| \.$subf \| \.\"$connection\" \| del\(.type\) \' $DATADIR/connections.json)
+	  eval ${getvalues[@]}
   fi
 }

@@ -113,7 +113,7 @@ then
 			  then
 				case $2 in
 					help|-h|--help)
-						help edit ;;
+						help mod ;;
 					$names)
 						invalid 4 ;;
 					*)
@@ -211,7 +211,7 @@ then
 			  fi
 			fi ;;
 		help|-h|--help)
-			help global ;;
+			help ;;
         folder)
 			case $2 in
 				""|help|-h|--help)
@@ -322,7 +322,7 @@ then
 												$names)
 													invalid 4 ;;
 												*)
-													folder ren ${ADDR[0]} ${ADDR[1]} $4 ;;
+													folder ren ${ADDR[0]} $4 ${ADDR[1]} ;;
 											esac
 										fi
 										fi
@@ -384,7 +384,7 @@ then
 					mod|modify|edit)
 						case $3 in
 							help|-h|--help)
-								help profile-edit ;;
+								help profile-mod ;;
 							$names)
 								invalid 4 ;;
 							*)

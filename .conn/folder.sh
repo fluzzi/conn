@@ -55,9 +55,9 @@ folder(){
 	  echo Folder \"$oldfolder\" renamed to \"$newfolder\"
   exit 1; fi
   if [ $1 = "ren" ] && [ $# -eq 4 ]; then
-	  folder=$3
+	  folder=$4
 	  oldsubfolder=$2
-	  newsubfolder=$4
+	  newsubfolder=$3
 	  mapfile -t folders < <(jq -r '. as $object | keys[] | select($object[.].type == "folder")?' $DATADIR/connections.json)
 	  if [ ! -z $(isinarray $folder ${folders[@]}) ]; then 
 		getsubfolders=(jq -r \'\.\"$folder\" \| \. as \$object \| keys\[\] \| select\(\$object\[\.\]\.type \=\= \"subfolder\"\)\?\' $DATADIR/connections.json)

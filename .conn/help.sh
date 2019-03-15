@@ -1,12 +1,12 @@
 help(){
-  if [ $1 = "folder" ]; then 
+  if [ "$1" = "folder" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME folder add <[subfolder@]folder>"
   echo "   $SCRIPT_NAME folder del|rm|remove <[subfolder@]folder>"
   echo "   $SCRIPT_NAME folder ren|rename <[subfolder@]folder> <new_[sub]folder_name>" 
   echo "   $SCRIPT_NAME folder ls|list"
-  echo "   $SCRIPT_NAME folder [help|-h|--help]"
+  echo "   $SCRIPT_NAME folder <help|-h|--help>"
   echo
   echo "Examples:"
   echo "   $SCRIPT_NAME folder add office"
@@ -15,7 +15,7 @@ help(){
   echo "   $SCRIPT_NAME folder del datacenter@office"
   echo
   exit 1; fi
-  if [ $1 = "folder-add" ]; then 
+  if [ "$1" = "folder-add" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME folder add <[subfolder@]folder>"
@@ -25,7 +25,7 @@ help(){
   echo "   $SCRIPT_NAME folder add data@office"
   echo
   exit 1; fi
-  if [ $1 = "folder-del" ]; then 
+  if [ "$1" = "folder-del" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME folder del|rm|remove <[subfolder@]folder>"
@@ -35,7 +35,7 @@ help(){
   echo "   $SCRIPT_NAME folder del office"
   echo
   exit 1; fi
-  if [ $1 = "folder-ren" ]; then 
+  if [ "$1" = "folder-ren" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME folder ren|rename <[subfolder@]folder> <new_[sub]folder_name>" 
@@ -45,14 +45,14 @@ help(){
   echo "   $SCRIPT_NAME folder ren data@office datacenter"
   echo
   exit 1; fi
-  if [ $1 = "profile" ]; then 
+  if [ "$1" = "profile" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME profile add <profile_name>"
   echo "   $SCRIPT_NAME profile del|rm|remove <profile_name>"
   echo "   $SCRIPT_NAME profile mod|modify|edit <profile_name>"
   echo "   $SCRIPT_NAME profile ls|list"
-  echo "   $SCRIPT_NAME profile [help|-h|--help]"
+  echo "   $SCRIPT_NAME profile <help|-h|--help>"
   echo
   echo "Examples:"
   echo "   $SCRIPT_NAME profile add office-user"
@@ -60,7 +60,7 @@ help(){
   echo "   $SCRIPT_NAME profile del office-user"
   echo
   exit 1; fi
-  if [ $1 = "profile-add" ]; then 
+  if [ "$1" = "profile-add" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME profile add <profile>"
@@ -76,7 +76,7 @@ help(){
   echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log>"
   echo
   exit 1; fi
-  if [ $1 = "profile-del" ]; then 
+  if [ "$1" = "profile-del" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME profile del|rm|remove <profile_name>"
@@ -85,7 +85,7 @@ help(){
   echo "   $SCRIPT_NAME profile rm office-user"
   echo
   exit 1; fi
-  if [ $1 = "profile-edit" ]; then 
+  if [ "$1" = "profile-mod" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME profile mod|modify|edit <profile>"
@@ -101,7 +101,16 @@ help(){
   echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log>"
   echo
   exit 1; fi
-  if [ $1 = "add" ]; then 
+  if [ "$1" = "profile-show" ]; then 
+  echo
+  echo "Usage:" 
+  echo "   $SCRIPT_NAME profile show <profile_name>"
+  echo
+  echo "Examples:"
+  echo "   $SCRIPT_NAME profile show office-user"
+  echo
+  exit 1; fi
+  if [ "$1" = "add" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME add <connection[@subfolder][@folder]>"
@@ -120,17 +129,16 @@ help(){
   echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
   echo
   exit 1; fi
-  if [ $1 = "del" ]; then 
+  if [ "$1" = "del" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME del|rm|remove <connection[@subfolder][@folder]>"
   echo
   echo "Examples:"
-  echo "   $SCRIPT_NAME del server@datacenter"
-  echo "   $SCRIPT_NAME del server"
+  echo "   $SCRIPT_NAME del server@datacenter@office"
   echo
   exit 1; fi
-  if [ $1 = "edit" ]; then 
+  if [ "$1" = "mod" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME mod|modify|edit <connection[@subfolder][@folder]>"
@@ -147,7 +155,7 @@ help(){
   echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
   echo
   exit 1; fi
-  if [ $1 = "ren" ]; then 
+  if [ "$1" = "ren" ]; then 
     echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME ren|rename <connection[@subfolder][@folder]> <new_connection_name>"
@@ -156,7 +164,16 @@ help(){
   echo "   $SCRIPT_NAME ren server@datacenter@office server-old"
   echo
   exit 1; fi
-  if [ $1 = "global" ]; then 
+  if [ "$1" = "show" ]; then 
+  echo
+  echo "Usage:" 
+  echo "   $SCRIPT_NAME show <connection[@subfolder][@folder]>"
+  echo
+  echo "Examples:"
+  echo "   $SCRIPT_NAME show server@datacenter@office"
+  echo
+  exit 1; fi
+  if [ -z "$1" ]; then 
   echo
   echo "Usage:" 
   echo "   $SCRIPT_NAME connection_name[@subfolder][@folder] [-override_options]"

@@ -42,7 +42,7 @@ profile(){
 	  echo do you want to save the session logs for this profile? if not, please leave empty
 	  echo set the location and file name, you can use Date command to add timestamp
 	  echo 'you can also use the following variables ${hostname}, ${port} and ${user}'
-	  echo example: '/home/user/logs/$hostname_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
+	  echo example: '/home/user/logs/${hostname}_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 	  inputregex Logging '.*'
 	  logs=$valueregex
 	  jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
@@ -143,7 +143,7 @@ profile(){
 		   echo do you want to save the session logs for this profile? if not, please leave empty
 		   echo set the location and file name, you can use Date command to add timestamp
 		   echo 'you can also use the following variables ${hostname}, ${port} and ${user}'
-		   echo example: '/home/user/logs/$hostname_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
+		   echo example: '/home/user/logs/${hostname}_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 		   inputregex Logging '.*'
 		   logs=$valueregex
 	  else
@@ -163,5 +163,11 @@ profile(){
   exit 1; fi
   if [ $1 = "list" ]; then 
 	jq -r 'keys[]' $DATADIR/profiles.json
+  fi
+  if [ $1 = "show" ]; then
+	  profile=$2
+	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
+	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
+	  jq -r ".\"$profile\"" $DATADIR/profiles.json
   fi
 }
