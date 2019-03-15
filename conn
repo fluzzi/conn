@@ -21,402 +21,96 @@ while [ $# -gt 0 ]; do
 	shift
 done
 set -- "${opts[@]}"; fi
-if [ $# -le 4 ] && [[ $1 =~ $namesif ]]
-then
-	case $1 in
-		add)
-			if [ $# -eq 1 ]
-			 then
-				invalid 2
-			else
-			 if [ $# -eq 2 ]
-			  then
-				case $2 in
-					help|-h|--help)
-						help add ;;
-					$names)
-						invalid 4 ;;
-					*)
-						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]]; then
-							IFS='@' read -ra ADDR <<< $2
-							if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif || ${ADDR[2]} =~ $namesif ]]; then invalid 4 ; fi
-							if [ ${#ADDR[@]} -gt 3 ]; then
-								invalid 7
-							else
-							if [ ${#ADDR[@]} -eq 1 ]; then
-								adm add ${ADDR[0]}
-							else 
-							if [ ${#ADDR[@]} -eq 2 ]; then
-								adm add ${ADDR[0]} ${ADDR[1]}
-							else
-								adm add ${ADDR[0]} ${ADDR[2]} ${ADDR[1]}
-							fi
-							fi
-							fi
-						else
-							invalid 5
-						fi ;;
-				esac
-			else
-			  if [ $# -ge 3 ]
-			   then
-				invalid 3
-			  fi
-			 fi
-			fi ;;
-        del|delete|rem|remove|rm)
-            if [ $# -eq 1 ]
-			 then
-				invalid 2
-			else
-			 if [ $# -eq 2 ]
-			  then
-				case $2 in
-					help|-h|--help)
-						help del ;;
-					$names)
-						invalid 4 ;;
-					*)
-						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]]; then
-							IFS='@' read -ra ADDR <<< $2
-							if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif || ${ADDR[2]} =~ $namesif ]]; then invalid 4 ; fi
-							if [ ${#ADDR[@]} -gt 3 ]; then
-								invalid 7
-							else
-							if [ ${#ADDR[@]} -eq 1 ]; then
-								adm del ${ADDR[0]}
-							else 
-							if [ ${#ADDR[@]} -eq 2 ]; then
-								adm del ${ADDR[0]} ${ADDR[1]}
-							else
-								adm del ${ADDR[0]} ${ADDR[2]} ${ADDR[1]}
-							fi
-							fi
-							fi
-						else
-							invalid 5
-						fi ;;
-				esac
-			else
-			  if [ $# -ge 3 ]
-			   then
-				invalid 3
-			  fi
-			 fi
-			fi ;;
-		mod|modify|edit)
-            if [ $# -eq 1 ]
-			 then
-				invalid 2
-			else
-			 if [ $# -eq 2 ]
-			  then
-				case $2 in
-					help|-h|--help)
-						help mod ;;
-					$names)
-						invalid 4 ;;
-					*)
-						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]]; then
-							IFS='@' read -ra ADDR <<< $2
-							if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif || ${ADDR[2]} =~ $namesif ]]; then invalid 4 ; fi
-							if [ ${#ADDR[@]} -gt 3 ]; then
-								invalid 7
-							else
-							if [ ${#ADDR[@]} -eq 1 ]; then
-								adm mod ${ADDR[0]}
-							else 
-							if [ ${#ADDR[@]} -eq 2 ]; then
-								adm mod ${ADDR[0]} ${ADDR[1]}
-							else
-								adm mod ${ADDR[0]} ${ADDR[2]} ${ADDR[1]}
-							fi
-							fi
-							fi
-						else
-							invalid 5
-						fi ;;
-				esac
-			else
-			  if [ $# -ge 3 ]
-			   then
-				invalid 3
-			  fi
-			 fi
-			fi ;;
-		ren|rename)
-			if [ $# -le 2 ]; then
-				case $2 in
-				help|-h|--help)
-					help ren;;
-				*)
-					invalid 2;;
-				esac
-			fi
-			if [ $# -ge 4 ]
-			 then
-				invalid 3 
-			fi
-			if [ $# -eq 3 ]
-			 then
-				case $2 in
-					help|-h|--help)
-						invalid 3 ;;
-					$names)
-						invalid 4 ;;
-					*)
-						if [[ ! $2 =~ [^$validdir] ]] && [[ ! $2 =~ ^@.*$ ]] && [[ ! $2 =~ ^.*@$ ]] && [[ ! $2 =~ ^.*@@.*$ ]] &&  [[ ! $3 =~ [^$validfile] ]]; then
-						IFS='@' read -ra ADDR <<< $2
-						if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif || ${ADDR[2]} =~ $namesif ]]; then invalid 4 ; fi
-						if [ ${#ADDR[@]} -gt 3 ]; then
-							invalid 7
-						fi
-						if [ ${#ADDR[@]} -eq 1 ]; then
-							case $3 in
-								$names)
-									invalid 4 ;;
-								*)
-									adm ren ${ADDR[0]} $3 ;;
-							esac
-						fi 
-						if [ ${#ADDR[@]} -eq 2 ]; then
-							case $3 in
-								$names)
-									invalid 4 ;;
-								*)
-									adm ren ${ADDR[0]} $3 ${ADDR[1]};;
-							esac
-						fi
-						if [ ${#ADDR[@]} -eq 3 ]; then
-							case $3 in
-								$names)
-									invalid 4 ;;
-								*)
-									adm ren ${ADDR[0]} $3 ${ADDR[2]} ${ADDR[1]};;
-							esac
-						fi
-						else
-							invalid 5
-						fi ;;
-				esac
-			fi;;
-		list|ls)
-            if [ $# -eq 1 ]
-			 then
-				adm list
-			else
-			  if [ $# -ge 2 ]
-			   then
-				invalid 3
-			  fi
-			fi ;;
-		help|-h|--help)
-			help ;;
-        folder)
-			case $2 in
-				""|help|-h|--help)
-					help folder ;;
-				ls|list)
-					if [ $# -eq 2 ]; then
-						folder list
-					else
-						invalid 3
-					fi;;
-				rename|ren|add|del|delete|rem|remove|rm)
-					if [ $# -eq 2 ]
-					then
-						invalid 2
-					fi
-					if [ $# -eq 3 ]
-					then
-						case $2 in
-							add)
-								case $3 in
-									help|-h|--help)
-										help folder-add ;;
-									$names)
-										invalid 4 ;;
-									*)
-										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] && [[ ! $3 =~ ^.*@@.*$ ]]; then
-										IFS='@' read -ra ADDR <<< $3
-										if [ ${#ADDR[@]} -gt 2 ]; then
-											invalid 6
-										else
-										if [ ${#ADDR[@]} -eq 1 ]; then
-											folder add ${ADDR[0]}
-										else 
-										if [ ${#ADDR[@]} -eq 2 ]; then
-											if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif ]]; then invalid 4 ; fi
-											folder add ${ADDR[0]} ${ADDR[1]} 
-										fi
-										fi
-										fi
-										else
-											invalid 5
-										fi ;;
-								esac ;;
-							del|delete|rem|remove|rm)
-								case $3 in
-									help|-h|--help)
-										help folder-del ;;
-									$names)
-										invalid 4 ;;
-									*)
-										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] && [[ ! $3 =~ ^.*@@.*$ ]]; then
-										IFS='@' read -ra ADDR <<< $3
-										if [ ${#ADDR[@]} -gt 2 ]; then
-											invalid 6
-										else
-										if [ ${#ADDR[@]} -eq 1 ]; then
-											folder del ${ADDR[0]}
-										else 
-										if [ ${#ADDR[@]} -eq 2 ]; then
-											if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif ]]; then invalid 4 ; fi
-											folder del ${ADDR[0]} ${ADDR[1]} 
-										fi
-										fi
-										fi
-										else
-											invalid 5
-										fi ;;
-								esac ;;
-						ren|rename)
-							case $3 in
-								help|-h|--help)
-									help folder-ren ;;
-								*)
-									invalid 2 ;;
-								list|ls)
-									invalid 3;;
-							esac;;
-					esac
-					fi
-					if [ $# -eq 4 ]
-					then
-						case $2 in
-							add|del|delete|rem|remove|rm|ls|list)
-								invalid 3 ;;
-							ren|rename)
-								case $3 in
-									help|-h|--help)
-										invalid 3 ;;
-									$names)
-										invalid 4 ;;
-									*)
-										if [[ ! $3 =~ [^$validdir] ]] && [[ ! $3 =~ ^@.*$ ]] && [[ ! $3 =~ ^.*@$ ]] && [[ ! $3 =~ ^.*@@.*$ ]] &&  [[ ! $4 =~ [^$validfile] ]]; then
-										IFS='@' read -ra ADDR <<< $3
-										if [ ${#ADDR[@]} -gt 2 ]; then
-											invalid 6
-										else
-										if [ ${#ADDR[@]} -eq 1 ]; then
-											case $4 in
-												$names)
-													invalid 4 ;;
-												*)
-													folder ren ${ADDR[0]} $4 ;;
-											esac
-										else 
-										if [ ${#ADDR[@]} -eq 2 ]; then
-											if [[ ${ADDR[0]} =~ $namesif || ${ADDR[1]} =~ $namesif ]]; then invalid 4 ; fi
-											case $4 in
-												$names)
-													invalid 4 ;;
-												*)
-													folder ren ${ADDR[0]} $4 ${ADDR[1]} ;;
-											esac
-										fi
-										fi
-										fi
-										else
-											invalid 5
-										fi ;;
-								esac ;;
-						esac
-						
-					fi ;;
-				*)
-					invalid 1 ;;
-			esac
-			;;
-        profile)
-			if [ $# -le 2 ]
-			 then
-				case $2 in
-					""|help|-h|--help)
-						help profile ;;
-					list|ls)
-						profile list;;
-					mod|modify|edit|add|del|delete|rem|remove|rm)
-						invalid 2 ;;
-					*)
-						invalid 1 ;;
-				esac
-			else
-			 if [ $# -eq 3 ]
-			  then
-				case $2 in
-					add)
-						case $3 in
-							help|-h|--help)
-								help profile-add ;;
-							$names)
-								invalid 4 ;;						
-							*)
-							if [[ ! $3 =~ [^$validfile] ]]; then
-								profile add $3
-							else
-								invalid 5
-							fi ;;
-						esac ;;
-					del|delete|rem|remove|rm)
-						case $3 in
-							help|-h|--help)
-								help profile-del ;;
-							$names)
-								invalid 4 ;;
-							*)
-							if [[ ! $3 =~ [^$validfile] ]]; then
-								profile del $3
-							else
-								invalid 5
-							fi ;;
-						esac ;;
-					mod|modify|edit)
-						case $3 in
-							help|-h|--help)
-								help profile-mod ;;
-							$names)
-								invalid 4 ;;
-							*)
-							if [[ ! $3 =~ [^$validfile] ]]; then
-								profile mod $3
-							else
-								invalid 5
-							fi ;;
-						esac ;;
-					list|ls)
-						invalid 3;;
-					help|-h|--help)
-						help profile ;;
-					*) 
-						invalid 1;;
-				esac
-			 else	
-			  if [ $# -eq 4 ]
-			  then
-				case $2 in
-					""|help|-h|--help)
-						help profile ;;
-					mod|modify|edit|add|del|delete|rem|remove|rm|ls|list)
-						invalid 3 ;;
-					*)
-						invalid 1 ;;
-				esac
-			  fi
-			 fi
-			fi ;;
-	esac
-	exit 1
+declare -A len
+len["add"]=2
+len["del"]=2
+len["mod"]=2
+len["list"]=1
+len["ren"]=3
+len["show"]=2
+len["help"]=1
+len["add help"]=2
+len["del help"]=2
+len["mod help"]=2
+len["ren help"]=2
+len["show help"]=2
+len["folder add"]=3
+len["folder del"]=3
+len["folder ren"]=4
+len["folder list"]=2
+len["folder add help"]=3
+len["folder del help"]=3
+len["folder ren help"]=3
+len["folder help"]=2
+len["folder"]=2
+len["profile add"]=3
+len["profile del"]=3
+len["profile mod"]=3
+len["profile list"]=2
+len["profile show"]=3
+len["profile add help"]=3
+len["profile del help"]=3
+len["profile mod help"]=3
+len["profile show help"]=3
+len["profile help"]=2
+len["profile"]=2
+declare -A max
+max["add"]=3
+max["del"]=3
+max["mod"]=3
+max["list"]=0
+max["ren"]=3
+max["show"]=3
+max["help"]=0
+max["add help"]=0
+max["del help"]=0
+max["mod help"]=0
+max["ren help"]=0
+max["show help"]=0
+max["folder add"]=2
+max["folder del"]=2
+max["folder ren"]=2
+max["folder list"]=0
+max["folder add help"]=0
+max["folder del help"]=0
+max["folder ren help"]=0
+max["folder help"]=0
+max["folder"]=0
+max["profile add"]=1
+max["profile del"]=1
+max["profile mod"]=1
+max["profile list"]=0
+max["profile show"]=1
+max["profile add help"]=0
+max["profile del help"]=0
+max["profile mod help"]=0
+max["profile show help"]=0
+max["profile help"]=0
+max["profile"]=0
+comm=()
+and=()
+command=()
+if [[ $1 =~ $namesif ]]; then
+	for args in $@; do
+		if [[ "$args" =~ ^del|delete|rm|remove$ ]]; then args="del"; fi
+		if [[ "$args" =~ ^mod|modify|edit$ ]]; then args="mod"; fi
+		if [[ "$args" =~ ^ren|rename$ ]]; then args="ren"; fi
+		if [[ "$args" =~ ^help|-h|--help$ ]]; then args="help"; fi
+		if [[ "${comm[*]: -1}" =~ ^add|del|mod|ren|show|list|help$ ]] && [ ! "$args" = "help" ]; then and+=("$args"); command+=("$args"); else
+		comm+=("$args")
+		command+=("$args");	fi
+	done
+if [ -z "${len[${comm[@]}]}" ]; then invalid 1; fi
+if [ "${len[${comm[@]}]}" -gt ${#command[@]} ]; then invalid 2; fi
+if [ "${len[${comm[@]}]}" -lt ${#command[@]} ]; then invalid 3; fi
+if [[ ${and[0]} =~ [^$validdir] ]] || [[ ${and[1]} =~ [^$validfile] ]] || [[ ${and[0]}  =~ ^@.*$ ]] || [[ ${and[0]} =~ ^.*@$ ]] || [[ ${and[0]} =~ ^.*@@.*$ ]]; then invalid 5; fi
+IFS='@' read -ra ADDR <<< ${and[0]}
+if [ ${#ADDR[@]} -gt "${max[${comm[@]}]}" ]; then invalid $((${max[${comm[@]}]} + 4)); exit 1; fi
+if [[ ${ADDR[0]} =~ $namesif || ${and[1]} =~ $namesif || ${ADDR[1]} =~ $namesif || ${ADDR[2]} =~ $namesif ]]; then invalid 4 ; fi
+if [ "${comm[*]: -1}" = "help" ]; then comm=("${comm[*]: -1}" "$(eval join_by "-" ${comm[@]::${#comm[@]}-1})"); fi
+if [[ "${comm[0]}" =~ ^del|mod|ren|add|show|list$ ]]; then comm=("adm"  "${comm[@]}"); fi
+eval "${comm[@]} ${ADDR[0]} ${and[1]} ${ADDR[2]} ${ADDR[1]}"
+exit 1	
 fi
 if [ $# -gt 4 ] && [[ $1 =~ $namesif ]]; then invalid 3; fi
 if [[ $1 == "--allow-uppercase" ]]; then 
