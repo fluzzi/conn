@@ -1,12 +1,33 @@
 isinarray(){
-first=$1
+if [ $1 == "-m" ]; then
+	tot=0
+	pre=1
+	comp=()
+	shift; local num=$1; shift
+	while [ $pre -le $num ]; do
+		comp+=("$1")
+		((pre++))
+		shift
+	done
+	for j in "${comp[@]}"; do
+		for i in "$@"
+		do
+			if [[ "$i" == "$j" ]] ; then
+				((tot++))
+			fi
+		done
+	done
+	if [ $tot -eq $num ]; then printf "true"; fi
+else
+	first="$1"
 shift
 for i in "$@"
 do
-    if [ "$i" == "$first" ] ; then
+    if [[ "$i" == "$first" ]] ; then
         printf "true"
     fi
 done
+fi
 }
 inputregex(){
   while true; do
@@ -76,7 +97,16 @@ get_values () {
 			mapfile -t this < <(eval ${this[@]})
 			args[$i]=${this[@]}
 		fi
-		if [[ "${args[$i]}" =~ ^@.*$ ]]; then
+		if [[ "${args[$i]}" =~ ^@.*$ ]] && [ $i -eq 5 ]; then 
+			IFS='|' read -ra that <<< "${args[$i]}"
+			for j in "${!that[@]}"; do
+				that[$j]=${that[$j]#?}
+				those=(jq -r \'.\"${that[$j]}\".${arguments[$i]}\' $DATADIR/profiles.json)
+				mapfile -t those < <(eval ${those[@]})
+				that[$j]=${those[@]}
+			done
+			args[$i]=$(join_by "|" ${that[@]})
+		elif [[ "${args[$i]}" =~ ^@.*$ ]]; then
 			this=${args[$i]#?}
 			this=(jq -r \'.\"$this\".${arguments[$i]}\' $DATADIR/profiles.json)
 			mapfile -t this < <(eval ${this[@]})

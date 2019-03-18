@@ -47,8 +47,8 @@ _conn()
   fi
   if [ "${#COMP_WORDS[@]}" = "3" ]; then
 	  strings=""
-	  if [ "${COMP_WORDS[1]}" = "folder" ]; then strings="add remove rename list help"; fi
-	  if [ "${COMP_WORDS[1]}" = "profile" ]; then strings="add remove modify show list help"; fi
+	  if [ "${COMP_WORDS[1]}" = "folder" ]; then strings="add remove delete rename list help"; fi
+	  if [ "${COMP_WORDS[1]}" = "profile" ]; then strings="add remove delete edit modify show list help"; fi
 	  if [[ "${COMP_WORDS[1]}" =~ ^add|rm|remove|del|delete|mod|modify|edit|ren|rename|show$ ]]; then strings="help"; fi
 	  if [[ "${COMP_WORDS[1]}" =~ ^rm|remove|del|delete|mod|modify|edit|ren|rename|show$ ]]; then 
 		  for i in ${!connections[@]}; do

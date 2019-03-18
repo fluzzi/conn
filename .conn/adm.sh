@@ -37,8 +37,8 @@ adm(){
 	  else
 		echo do you want to set a port for this connection? if $protocol default just leave empty
 		  echo options: 1-65535
-		  inputrange Port 1 65535
 		  echo you can use the configured setting in a profile using @profilename
+		  inputrange Port 1 65535
 		  port=$valuerange
 		  if [ $protocol = "ssh" ] && [ -z "$port" ]; then port=22; fi
 		  if [ $protocol = "telnet" ] && [ -z "$port" ]; then port=23; fi
@@ -53,11 +53,14 @@ adm(){
 	  echo you can use the configured setting in a profile using @profilename
 	  echo if your password start with @, you can duplicate the @ to escape profile names. 
 	  echo Example: @@password will work as @password and not a profile name
+	  echo if you need to pass multiple passwords \(ex. using jumphost\) you can use profiles:
+	  echo Example: \@profile1\|\@profile1\|\@profile2
 	  while true; do
 	      echo -n Password:
 		  read -s password
-		  this=${password:1};
-		  if [[ $password =~ (^@.+$) ]] && [[ ! $password =~ (^@@.+$) ]] && [ -z $(isinarray $this ${allprofiles[@]}) ]; then echo; echo profile $this not found, please try again; echo;
+		  IFS='|' read -ra that <<< $password
+		  for ti in "${!that[@]}"; do that[$ti]="${that[$ti]:1}"; done
+		  if [[ $password =~ (^@.+$) ]] && [[ ! $password =~ (^@@.+$) ]] && [ -z $(isinarray -m ${#that[@]} ${that[@]} ${allprofiles[@]}) ]; then echo; echo profile \"$(join_by "|" ${that[@]})\" not found, please try again; echo;
 		  elif [ ! -z $password ] && ( [[ ! $password =~ (^@.+$) ]] || [[ $password =~ (^@@.+$) ]] ); then
 			if [[ $password =~ (^@@.+$) ]]; then password=${password:1}; fi
 			password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`;break; else break; echo; fi
@@ -200,13 +203,16 @@ adm(){
 		  echo
 		  echo do you want to set a password for this connection? if not, please leave empty
 		  echo you can use the configured setting in a profile using @profilename
-		  echo if your password start with @, you can duplicate the @ to escape profile names. 
+		  echo if your password start with @, you can duplicate the @ to escape profile names.
 		  echo Example: @@password will work as @password and not a profile name
+		  echo if you need to pass multiple passwords \(ex. using jumphost\) you can use profiles:
+		  echo Example: \@profile1\|\@profile1\|\@profile2
 		  while true; do
 			  echo -n Password:
 			  read -s password
-			  this=${password:1}
-			  if [[ $password =~ (^@.+$) ]] && [[ ! $password =~ (^@@.+$) ]] && [ -z $(isinarray $this ${allprofiles[@]}) ]; then echo; echo profile $this not found, please try again; echo;
+			  IFS='|' read -ra that <<< $password
+			  for ti in "${!that[@]}"; do that[$ti]="${that[$ti]:1}"; done
+			  if [[ $password =~ (^@.+$) ]] && [[ ! $password =~ (^@@.+$) ]] && [ -z $(isinarray -m ${#that[@]} ${that[@]} ${allprofiles[@]}) ]; then echo; echo profile \"$(join_by "|" ${that[@]})\" not found, please try again; echo;
 			  elif [ ! -z $password ] && ( [[ ! $password =~ (^@.+$) ]] || [[ $password =~ (^@@.+$) ]] ); then
 				if [[ $password =~ (^@@.+$) ]]; then password=${password:1}; fi
 				password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`;break; else break; echo; fi
