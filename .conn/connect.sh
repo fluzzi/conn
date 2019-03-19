@@ -142,7 +142,7 @@ if [ $protocol = "ssh" ]; then
 	"
 	p=1
 	while [ $p -lt "${#password[@]}" ] ; do
-	wordpass="$wordpass ; expect \"assword:\"; send \"${password[$p]}\r\""
+	wordpass="$wordpass ; expect \"(yes/no)\" { send \"yes\r\";exp_continue} \"assword:\"; send \"${password[$p]}\r\""
 	((p++))
 	done
 	fi
