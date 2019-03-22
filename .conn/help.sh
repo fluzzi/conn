@@ -74,7 +74,7 @@ help(){
   echo "               password        : password to use on the connection, stored encrypted.<pass>"
   echo "               options         : Options to pass to the protocol. Ex. <\"-X -c aes128-cbc\">"
   echo "               logs            : Location to store the connection logs. You can use date command."
-  echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log>"
+  echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log>"
   echo
   exit 1; fi
   if [ "$1" = "profile-del" ]; then 
@@ -99,7 +99,7 @@ help(){
   echo "               password        : password to use on the connection, stored encrypted.<pass>"
   echo "               options         : Options to pass to the protocol. Ex. <\"-X -c aes128-cbc\">"
   echo "               logs            : Location to store the connection logs. You can use date command."
-  echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log>"
+  echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log>"
   echo
   exit 1; fi
   if [ "$1" = "profile-show" ]; then 
@@ -127,7 +127,7 @@ help(){
   echo "               password        : password to use on the connection, stored encrypted.<pass|@profile>"
   echo "               options         : Options to pass to the protocol. Ex. <\"-X -c aes128-cbc\"|@profile>"
   echo "               logs            : Location to store the connection logs. You can use date command."
-  echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
+  echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
   echo
   exit 1; fi
   if [ "$1" = "del" ]; then 
@@ -153,7 +153,7 @@ help(){
   echo "               password        : password to use on the connection, stored encrypted.<pass|@profile>"
   echo "               options         : Options to pass to the protocol. Ex. <\"-X -c aes128-cbc\"|@profile>"
   echo "               logs            : Location to store the connection logs. You can use date command."
-  echo "                                 </home/user/logs/${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
+  echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
   echo
   exit 1; fi
   if [ "$1" = "ren" ]; then 
