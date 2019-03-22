@@ -162,8 +162,9 @@ elif [ $protocol = "telnet" ]; then
 	fi
 	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $userpass; interact"  2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs) ;
 	else /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $userpass; interact"  2> /dev/null ; fi
-else 
+elif [ $protocol = "sftp" ]; then
+	"/mnt/c/Program Files (x86)/WinSCP/winSCP.exe" sftp://$user:${password[0]}@$hostname:$port
+else
 invalid 9 $protocol
 fi
-
 }
