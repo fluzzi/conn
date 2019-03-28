@@ -3,8 +3,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DATADIR=$HOME/.conn
 SCRIPT_NAME="$(basename "$0")"
 source $DIR/.conn/firstrun.sh
-if [ ! -f $DATADIR/.osk ]; then firstrun; fi
-source $DATADIR/config
+source $DIR/.conn/loadconfig.sh
 source $DIR/.conn/errors.sh
 source $DIR/.conn/var.sh
 source $DIR/.conn/functions.sh
@@ -123,5 +122,13 @@ if [[ $1 == "--allow-uppercase" ]]; then
 		*)
 			invalid 8 $2;;
 	esac
+	exit 1; fi
+if [[ $1 == "--keepalive" ]]; then 
+	if [[ $2 =~ ^[0-9]+$ ]]; then
+		sed -i "s/idletime=.*/idletime=\"$2\"/" $DATADIR/config
+	else
+		
+		invalid 8 "$2, must be a number"
+	fi
 	exit 1; fi
 connect "$@"
