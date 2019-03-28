@@ -193,6 +193,8 @@ help(){
   echo "   $SCRIPT_NAME [command1] [command2] <help|-h|--help>"
   echo "   $SCRIPT_NAME --allow-uppercase <true/false>"
   echo "        default is <false>"
+  echo "   $SCRIPT_NAME --keepalive <seconds>"
+  echo "        default is 0 (disabled)"
   echo
   echo "   Manage connections:"  
   echo "   $SCRIPT_NAME add <connection[@subfolder][@folder]>"

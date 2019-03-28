@@ -133,6 +133,11 @@ else
 	password=(${args[5]})
 fi
 hostname=${args[1]};protocol=${args[2]};port=${args[3]};user=${args[4]};options=${args[6]};eval logs=${args[7]}
+if [ $idletime -gt 0 ]; then 
+interact=" interact timeout $idletime { send \x05 }"
+else
+interact="interact"
+fi
 if [ $protocol = "ssh" ]; then
 	cmd="ssh $(join_by "@" $user $hostname) $options"
 	if [ ! -z $port ]; then cmd="$cmd -p $port"; fi
@@ -146,8 +151,8 @@ if [ $protocol = "ssh" ]; then
 	((p++))
 	done
 	fi
-	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $wordpass; interact" 2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs);
-	else /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $wordpass; interact"  2> /dev/null; fi
+	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $wordpass; $interact" 2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs);
+	else /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $wordpass; $interact"  2> /dev/null; fi
 elif [ $protocol = "telnet" ]; then
 	cmd="telnet $hostname $port $options"
 	if [ ! -z ${password[0]} ] ; then userpass="expect\
@@ -160,8 +165,8 @@ elif [ $protocol = "telnet" ]; then
 	\"assword:\"; send \"${password[0]}\"\
 	"
 	fi
-	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $userpass; interact"  2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs) ;
-	else /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $userpass; interact"  2> /dev/null ; fi
+	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs) ;
+	else /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null ; fi
 else 
 invalid 9 $protocol
 fi
