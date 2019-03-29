@@ -53,6 +53,8 @@ End with an example of getting some data out of the system or using it for a lit
    conn [command1] [command2] <help|-h|--help>
    conn --allow-uppercase <true/false>
         default is <false>
+   conn --keepalive <seconds>
+        default is 0 (disabled)
 ```
 
 ####   Manage connections:  
