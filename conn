@@ -3,6 +3,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DATADIR=$HOME/.conn
 SCRIPT_NAME="$(basename "$0")"
 source $DIR/.conn/firstrun.sh
+if [ ! -f $DATADIR/.osk ]; then firstrun; fi
 source $DIR/.conn/loadconfig.sh
 source $DIR/.conn/errors.sh
 source $DIR/.conn/var.sh
