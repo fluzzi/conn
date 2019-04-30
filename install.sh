@@ -17,7 +17,7 @@ fi
 mkdir -p /usr/local/bin/.conn
 install -m 755 "conn" /usr/local/bin/
 install -m 755 "conn-autocomplete" /etc/bash_completion.d/
-for file in .conn/*;do
+for file in connfiles/*;do
     install -m 755 "$file" /usr/local/bin/.conn
 done
 echo "Install complete"
@@ -29,7 +29,7 @@ for directory in $PATH; do
 		mkdir -p $directory/.conn
 		install -m 755 "conn" $directory
 		install -m 755 "conn-autocomplete" $directory/.conn
-		for file in .conn/*;do
+		for file in connfiles/*;do
 			install -m 755 "$file" $directory/.conn
 		done
 		echo "source '$directory/.conn/conn-autocomplete'" >> ~/.bashrc
@@ -41,7 +41,7 @@ for directory in $PATH; do
 		mkdir -p $HOME/bin/.conn
 		install -m 755 "conn" $HOME/bin
 		install -m 755 "conn-autocomplete" $HOME/bin/.conn
-		for file in .conn/*;do
+		for file in connfiles/*;do
 			install -m 755 "$file" $HOME/bin/.conn
 		done
 		echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc

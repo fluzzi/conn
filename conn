@@ -1,18 +1,19 @@
 #!/bin/bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/.conn"
+[ -d "$DIR" ] || DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/connfiles"
 DATADIR=$HOME/.conn
 SCRIPT_NAME="$(basename "$0")"
-source $DIR/.conn/firstrun.sh
+source $DIR/firstrun.sh
 if [ ! -f $DATADIR/.osk ]; then firstrun; fi
-source $DIR/.conn/loadconfig.sh
-source $DIR/.conn/errors.sh
-source $DIR/.conn/var.sh
-source $DIR/.conn/functions.sh
-source $DIR/.conn/help.sh
-source $DIR/.conn/adm.sh
-source $DIR/.conn/folder.sh
-source $DIR/.conn/profile.sh
-source $DIR/.conn/connect.sh
+source $DIR/loadconfig.sh
+source $DIR/errors.sh
+source $DIR/var.sh
+source $DIR/functions.sh
+source $DIR/help.sh
+source $DIR/adm.sh
+source $DIR/folder.sh
+source $DIR/profile.sh
+source $DIR/connect.sh
 if [ $case == "false" ]; then 
 opts=()
 while [ $# -gt 0 ]; do
