@@ -317,7 +317,8 @@ adm(){
 	  echo Connection \"$(join_by @ $oldconnection $subfolder $folder)\" renamed to \"$newconnection\"
   exit 1; fi
   if [ $1 = "list" ]; then 
-	jq -r 'paths as $path | select(getpath($path) == "connection") | $path |  map(select(. != "type")) | join("@")' $DATADIR/connections.json
+    jq -r 'paths as $path | select(getpath($path) == "connection") | $path |  [map(select(. != "type"))[-1,-2,-3]] | map(select(. !=null)) | join("@")' $DATADIR/connections.json
+    exit 0
   fi
   if [ $1 = "show" ]; then 
 	connection=$2
@@ -339,5 +340,6 @@ adm(){
 	  if [ -z $(isinarray $connection ${connections[@]}) ]; then invalid 24 $(join_by @ $connection $subfolder $folder); fi
 	  getvalues=(jq -r \'\. \| \.$fold \| \.$subf \| \.\"$connection\" \| del\(.type\) \' $DATADIR/connections.json)
 	  eval ${getvalues[@]}
+      exit 0
   fi
 }
