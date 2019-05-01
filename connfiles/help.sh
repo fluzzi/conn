@@ -14,7 +14,7 @@ help(){
   echo "   $SCRIPT_NAME folder ren data@office datacenter"
   echo "   $SCRIPT_NAME folder del datacenter@office"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "folder-add" ]; then 
   echo
   echo "Usage:" 
@@ -24,7 +24,7 @@ help(){
   echo "   $SCRIPT_NAME folder add office"
   echo "   $SCRIPT_NAME folder add data@office"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "folder-del" ]; then 
   echo
   echo "Usage:" 
@@ -34,7 +34,7 @@ help(){
   echo "   $SCRIPT_NAME folder del datacenter@office"
   echo "   $SCRIPT_NAME folder del office"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "folder-ren" ]; then 
   echo
   echo "Usage:" 
@@ -44,7 +44,7 @@ help(){
   echo "   $SCRIPT_NAME folder ren newoffice office"
   echo "   $SCRIPT_NAME folder ren data@office datacenter"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "profile" ]; then 
   echo
   echo "Usage:" 
@@ -60,7 +60,7 @@ help(){
   echo "   $SCRIPT_NAME profile edit office-user"
   echo "   $SCRIPT_NAME profile del office-user"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "profile-add" ]; then 
   echo
   echo "Usage:" 
@@ -76,7 +76,7 @@ help(){
   echo "               logs            : Location to store the connection logs. You can use date command."
   echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log>"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "profile-del" ]; then 
   echo
   echo "Usage:" 
@@ -85,7 +85,7 @@ help(){
   echo "Examples:"
   echo "   $SCRIPT_NAME profile rm office-user"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "profile-mod" ]; then 
   echo
   echo "Usage:" 
@@ -101,7 +101,7 @@ help(){
   echo "               logs            : Location to store the connection logs. You can use date command."
   echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log>"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "profile-show" ]; then 
   echo
   echo "Usage:" 
@@ -110,7 +110,7 @@ help(){
   echo "Examples:"
   echo "   $SCRIPT_NAME profile show office-user"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "add" ]; then 
   echo
   echo "Usage:" 
@@ -129,7 +129,7 @@ help(){
   echo "               logs            : Location to store the connection logs. You can use date command."
   echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "del" ]; then 
   echo
   echo "Usage:" 
@@ -138,7 +138,7 @@ help(){
   echo "Examples:"
   echo "   $SCRIPT_NAME del server@datacenter@office"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "mod" ]; then 
   echo
   echo "Usage:" 
@@ -155,7 +155,7 @@ help(){
   echo "               logs            : Location to store the connection logs. You can use date command."
   echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "ren" ]; then 
     echo
   echo "Usage:" 
@@ -164,7 +164,7 @@ help(){
   echo "   $SCRIPT_NAME ren pc@office pc-old"
   echo "   $SCRIPT_NAME ren server@datacenter@office server-old"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ "$1" = "show" ]; then 
   echo
   echo "Usage:" 
@@ -173,7 +173,7 @@ help(){
   echo "Examples:"
   echo "   $SCRIPT_NAME show server@datacenter@office"
   echo
-  exit 1; fi
+  exit 0; fi
   if [ -z "$1" ]; then 
   echo
   echo "Usage:" 
@@ -229,5 +229,5 @@ help(){
   echo "   $SCRIPT_NAME server -l root"
   echo
   echo
-  exit 1; fi
+  exit 0; fi
 }

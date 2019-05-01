@@ -34,7 +34,7 @@ for directory in $PATH; do
 		done
 		echo "source '$directory/.conn/conn-autocomplete'" >> ~/.bashrc
 		echo "Install complete"
-		exit 1
+		exit 0
 	else 
 		
 		mkdir -p $HOME/bin
@@ -47,7 +47,7 @@ for directory in $PATH; do
 		echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
 		echo "source '$HOME/bin/.conn/conn-autocomplete'" >> ~/.bashrc
 		echo "Install complete"
-		exit 1
+		exit 0
     fi
 done
 ;;
