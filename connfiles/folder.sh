@@ -5,7 +5,7 @@ folder(){
 	  if [ ! -z $(isinarray $folder ${folders[@]}) ]; then invalid 20 $folder; fi
 	  jq -r ". | . + {\"$folder\":{\"type\": \"folder\"}}" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
 	  echo Folder \"$folder\" added correctly
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "add" ] && [ $# -eq 3 ]; then
 	  folder=$3
 	  subfolder=$2
@@ -21,14 +21,14 @@ folder(){
 		invalid 22 $folder
 	  fi
 	  echo Subfolder \"$subfolder@$folder\" added correctly
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "del" ] && [ $# -eq 2 ]; then
 	folder=$2
 	  mapfile -t folders < <(jq -r '. as $object | keys[] | select($object[.].type == "folder")?' $DATADIR/connections.json)
 	  if [ -z $(isinarray $folder ${folders[@]}) ]; then invalid 22 $folder; fi
 	  jq -r "del(.\"$folder\")" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
 	  echo folder \"$folder\" deleted
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "del" ] && [ $# -eq 3 ]; then
 	  folder=$3
 	  subfolder=$2
@@ -42,7 +42,7 @@ folder(){
 		invalid 22 $folder
 	  fi
 	  echo Subfolder \"$subfolder@$folder\" deleted
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "ren" ] && [ $# -eq 3 ]; then
 	  oldfolder=$2
 	  newfolder=$3
@@ -53,7 +53,7 @@ folder(){
 	  
 	  jq -r "with_entries(if .key == \"$oldfolder\" then .key = \"$newfolder\" else . end)" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
 	  echo Folder \"$oldfolder\" renamed to \"$newfolder\"
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "ren" ] && [ $# -eq 4 ]; then
 	  folder=$4
 	  oldsubfolder=$2
@@ -73,8 +73,9 @@ folder(){
 		invalid 22 $folder
 	  fi
 	  echo Subfolder \"$oldsubfolder@$folder\" renamed to \"$newsubfolder@$folder\" 
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "list" ]; then 
 	jq -r 'paths as $path | select(getpath($path) == "folder" or getpath($path) == "subfolder") | $path |  map(select(. != "type")) | join("@")' $DATADIR/connections.json
+    exit 0
   fi
 }

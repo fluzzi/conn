@@ -107,12 +107,12 @@ if [ "${len[${comm[@]}]}" -gt ${#command[@]} ]; then invalid 2; fi
 if [ "${len[${comm[@]}]}" -lt ${#command[@]} ]; then invalid 3; fi
 if [[ ${and[0]} =~ [^$validdir] ]] || [[ ${and[1]} =~ [^$validfile] ]] || [[ ${and[0]}  =~ ^@.*$ ]] || [[ ${and[0]} =~ ^.*@$ ]] || [[ ${and[0]} =~ ^.*@@.*$ ]]; then invalid 5; fi
 IFS='@' read -ra ADDR <<< ${and[0]}
-if [ ${#ADDR[@]} -gt "${max[${comm[@]}]}" ]; then invalid $((${max[${comm[@]}]} + 4)); exit 1; fi
+if [ ${#ADDR[@]} -gt "${max[${comm[@]}]}" ]; then invalid $((${max[${comm[@]}]} + 4)); fi
 if [[ ${ADDR[0]} =~ $namesif || ${and[1]} =~ $namesif || ${ADDR[1]} =~ $namesif || ${ADDR[2]} =~ $namesif ]]; then invalid 4 ; fi
 if [ "${comm[*]: -1}" = "help" ]; then comm=("${comm[*]: -1}" "$(eval join_by "-" ${comm[@]::${#comm[@]}-1})"); fi
 if [[ "${comm[0]}" =~ ^del|mod|ren|add|show|list$ ]]; then comm=("adm"  "${comm[@]}"); fi
 eval "${comm[@]} ${ADDR[0]} ${and[1]} ${ADDR[2]} ${ADDR[1]}"
-exit 1	
+exit 0	
 fi
 if [ $# -gt 4 ] && [[ $1 =~ $namesif ]]; then invalid 3; fi
 if [[ $1 == "--allow-uppercase" ]]; then 
@@ -124,7 +124,7 @@ if [[ $1 == "--allow-uppercase" ]]; then
 		*)
 			invalid 8 $2;;
 	esac
-	exit 1; fi
+	exit 0; fi
 if [[ $1 == "--keepalive" ]]; then 
 	if [[ $2 =~ ^[0-9]+$ ]]; then
 		sed -i "s/idletime=.*/idletime=\"$2\"/" $DATADIR/config
@@ -132,5 +132,5 @@ if [[ $1 == "--keepalive" ]]; then
 		
 		invalid 8 "$2, must be a number"
 	fi
-	exit 1; fi
+	exit 0; fi
 connect "$@"

@@ -48,7 +48,7 @@ profile(){
 	  jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
 	  echo
 	  echo Profile \"$profile\" created correctly
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "del" ]; then
 	  profile=$2
 	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
@@ -58,7 +58,7 @@ profile(){
 	  if [ ! -z ${profileused[0]} ]; then invalid 13 $profile; fi
 	  jq -r "del(.\"$profile\")" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
 	  echo profile \"$profile\" deleted
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "mod" ]; then
 	  profile=$2
 	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
@@ -160,14 +160,16 @@ profile(){
 		echo
 		echo Profile \"$profile\" edited correctly
 	  fi
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "list" ]; then 
 	jq -r 'keys[]' $DATADIR/profiles.json
+    exit 0
   fi
   if [ $1 = "show" ]; then
 	  profile=$2
 	  mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
 	  if [ -z $(isinarray $profile ${profiles[@]}) ]; then invalid 11 $profile; fi
 	  jq -r ".\"$profile\"" $DATADIR/profiles.json
+      exit 0
   fi
 }

@@ -6,22 +6,22 @@ if [ $# -eq 0 ] || ( [ $# -eq 1 ] && [[ $1 =~ ^@.*$ ]] && [[ ! $1 =~ ^.*@$ ]] &&
 	else
 		if [ ! -z ${ADDR[2]} ];	then fold2=\"${ADDR[2]}\"; fi
 		if [ ! -z ${ADDR[1]} ];	then fold1=\"${ADDR[1]}\"; fi
-		getconnections=(jq -r \'\.  \| \.$fold2  \| \.$fold1  \| paths as \$path \| select\(getpath\(\$path\) \=\= \"connection\"\) \| \$path \|  map\(select\(\. \!\= \"type\"\)\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
+		getconnections=(jq -r \'\.  \| \.$fold2  \| \.$fold1  \| paths as \$path \| select\(getpath\(\$path\) \=\= \"connection\"\) \| \$path \|  \[map\(select\(\. \!\= \"type\"\)\)\[-1,-2,-3\]\] \| map\(select\(\. \!\=null \)\) \| join\(\"\@\"\)\' $DATADIR/connections.json)
 		mapfile -t connections < <(eval ${getconnections[@]})
 		if [ ${#connections[@]} -eq 0 ] && [ $# -eq 0 ] ; then invalid 26 ; fi
 		if [ ${#connections[@]} -eq 0 ]; then invalid 25 $1 ; fi
 		for i in ${!connections[@]}; do
-		con=$(split_by ${connections[$i]} "@" -r)
-		con="$(join_by "@" $con)"
-		echo "$(($i + 1)) - $con"
+		echo "$(($i + 1)) - ${connections[$i]}"
 		done
 		inputrange Connection 1 $((i + 1))
 		if [[ ! $valuerange =~ (^[0-9]+$) ]] ; then
-			exit 1
+			invalid 9 $valuerange
 		else 
 			connections=(${connections[$(($valuerange -1))]})
+            con=$(split_by ${connections[@]} "@" -r)
+			con="$(join_by "@" ${connections[$i]})"
 			declare args
-			get_values ${connections[0]} ${ADDR[1]} ${ADDR[2]}
+			get_values ${con} ${ADDR[1]} ${ADDR[2]}
 		fi
 	fi
 else
@@ -48,7 +48,7 @@ if [ $# -eq 1 ]; then
 				done
 				inputrange Connection 1 $((i + 1))
 				if [[ ! $valuerange =~ (^[0-9]+$) ]] ; then
-					exit 1
+					invalid 9 $valuerange
 				else 
 					connections=(${connections[$(($valuerange -1))]})
 					declare args
@@ -73,7 +73,7 @@ else       # Reset in case getopts has been used previously in the shell.
 		   P) flags[protocol]="$OPTARG";;
 		   o) flags[options]="$OPTARG";;
 		   s) flags[password]="null";;
-		   *) exit 1
+		   *) exit 108 
 		  esac
 		done
 		if [ $tot -eq $OPTIND ]; then vals+=("$1"); shift; else shift $((OPTIND-1)); fi
@@ -102,7 +102,7 @@ else       # Reset in case getopts has been used previously in the shell.
 					done
 					inputrange Connection 1 $((i + 1))
 					if [[ ! $valuerange =~ (^[0-9]+$) ]] ; then
-						exit 1
+						invalid 9 $valuerange
 					else 
 						connections=(${connections[$(($valuerange -1))]})
 						declare args

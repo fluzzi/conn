@@ -100,7 +100,7 @@ adm(){
 	  esac
 	  echo
 	  echo Connection \"$(join_by @ $connection $subfolder $folder)\" added correctly
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "del" ]; then
 	  connection=$2
 	  folder=$3
@@ -121,7 +121,7 @@ adm(){
 	  if [ -z $(isinarray $connection ${connections[@]}) ]; then invalid 24 $(join_by @ $connection $subfolder $folder); fi
 		jq -r "del( . | .$fold | .$subf | .\"$connection\")" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
 	  echo Connection \"$(join_by @ $connection $subfolder $folder)\" deleted
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "mod" ]; then 
 	  connection=$2
 	  folder=$3
@@ -274,7 +274,7 @@ adm(){
 		  echo
 		  echo Connection \"$(join_by @ $connection $subfolder $folder)\" edited correctly
 		fi
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "ren" ]; then
 	  oldconnection=$2
 	  newconnection=$3
@@ -315,7 +315,7 @@ adm(){
 		;;
 	  esac
 	  echo Connection \"$(join_by @ $oldconnection $subfolder $folder)\" renamed to \"$newconnection\"
-  exit 1; fi
+  exit 0; fi
   if [ $1 = "list" ]; then 
     jq -r 'paths as $path | select(getpath($path) == "connection") | $path |  [map(select(. != "type"))[-1,-2,-3]] | map(select(. !=null)) | join("@")' $DATADIR/connections.json
     exit 0
