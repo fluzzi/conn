@@ -139,11 +139,12 @@ else
 interact="interact"
 fi
 if [ $protocol = "ssh" ]; then
-	cmd="ssh $(join_by "@" $user $hostname) $options"
+	cmd="ssh -t $(join_by "@" $user $hostname)"
 	if [ ! -z $port ]; then cmd="$cmd -p $port"; fi
+    if [ ! -z "$options" ]; then cmd="$cmd $options"; fi
 	if [ ! -z "${password[0]}" ]; then wordpass="expect\
 	\"(yes/no)\" { send \"yes\r\";exp_continue}\
-	$wordpass \"assword:\"; send \"${password[0]}\r\"\
+	$wordpass -re {(assword:|sername:)}; send \"${password[0]}\r\"\
 	"
 	p=1
 	while [ $p -lt "${#password[@]}" ] ; do
