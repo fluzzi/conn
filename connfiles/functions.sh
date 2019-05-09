@@ -87,9 +87,19 @@ split_by () {
 }
 get_values () {
 	path=$(split_by $1 "@")
-	if [ $# -eq 3 ]; then path=(jq -r \'.\"$3\".\"$2\".\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json); fi
-	if [ $# -eq 2 ]; then path=(jq -r \'.\"$2\".\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json); fi
-	if [ $# -eq 1 ]; then path=(jq -r \'.\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json); fi
+    local id=$(split_by $1 "@" -r)
+	if [ $# -eq 3 ]; then 
+        path=(jq -r \'.\"$3\".\"$2\".\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json)
+        id="$(join_by "@" $id)@${2}@${3}"
+    fi
+	if [ $# -eq 2 ]; then 
+        path=(jq -r \'.\"$2\".\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json)
+        id="$(join_by "@" $id)@${2}"
+    fi
+	if [ $# -eq 1 ]; then
+        path=(jq -r \'.\"$(join_by -m "\".\"" $path)\"[]\' $DATADIR/connections.json)
+        id="$(join_by "@" $id)"
+    fi
 	mapfile -t args < <(eval ${path[@]})
 	for i in "${!args[@]}"; do
 		if [ -z "${args[$i]}" ] && [ $i -ge 2 ] && [ $i -le 3 ]; then
@@ -111,6 +121,7 @@ get_values () {
 			this=(jq -r \'.\"$this\".${arguments[$i]}\' $DATADIR/profiles.json)
 			mapfile -t this < <(eval ${this[@]})
 			args[$i]=${this[@]}
-		fi
+        fi
 	done
+    args[0]="$id"
 }
