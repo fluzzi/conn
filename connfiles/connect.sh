@@ -132,7 +132,7 @@ IFS='|' read -ra that <<< "${args[5]}"
 else
 	password=(${args[5]})
 fi
-hostname=${args[1]};protocol=${args[2]};port=${args[3]};user=${args[4]};options=${args[6]};eval logs=${args[7]}
+id=${args[0]};hostname=${args[1]};protocol=${args[2]};port=${args[3]};user=${args[4]};options=${args[6]};eval logs=${args[7]}
 if [ $idletime -gt 0 ]; then 
 interact=" interact timeout $idletime { send \x05 }"
 else

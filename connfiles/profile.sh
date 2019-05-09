@@ -41,7 +41,7 @@ profile(){
 	  echo
 	  echo do you want to save the session logs for this profile? if not, please leave empty
 	  echo set the location and file name, you can use Date command to add timestamp
-	  echo 'you can also use the following variables ${hostname}, ${port} and ${user}'
+	  echo 'you can also use the following variables ${hostname}, ${id}, ${port} and ${user}'
 	  echo example: '/home/user/logs/${hostname}_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 	  inputregex Logging '.*'
 	  logs=$valueregex
@@ -142,7 +142,7 @@ profile(){
 		   echo
 		   echo do you want to save the session logs for this profile? if not, please leave empty
 		   echo set the location and file name, you can use Date command to add timestamp
-		   echo 'you can also use the following variables ${hostname}, ${port} and ${user}'
+		   echo 'you can also use the following variables ${hostname}, ${id}, ${port} and ${user}'
 		   echo example: '/home/user/logs/${hostname}_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 		   inputregex Logging '.*'
 		   logs=$valueregex
