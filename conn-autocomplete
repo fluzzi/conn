@@ -28,21 +28,12 @@ split_by () {
 }
 _conn()
 {
-	mapfile -t connections < <(jq '. | paths as $path | select(getpath($path) == "connection") | $path | map(select(. != "type")) | join("@")' $DATADIR/connections.json)
-	mapfile -t folders < <(jq -r 'paths as $path | select(getpath($path) == "folder" or getpath($path) == "subfolder") | $path |  map(select(. != "type")) | join("@")' $DATADIR/connections.json)
+    mapfile -t connections < <(jq -r 'paths as $path | select(getpath($path) == "connection") | $path |  [map(select(. != "type"))[-1,-2,-3]] | map(select(. !=null)) | join("@")' $DATADIR/connections.json)
+    mapfile -t folders < <(jq -r 'paths as $path | select(getpath($path) == "folder") or select(getpath($path) == "subfolder") | $path |  [map(select(. != "type"))[-1,-2,-3]] | map(select(. !=null)) | join("@")' $DATADIR/connections.json)
 	mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
   if [ "${#COMP_WORDS[@]}" = "2" ]; then
 	  strings="add remove delete edit modify rename show list folder profile help"
-	  for i in ${!connections[@]}; do
-		  con=$(split_by ${connections[$i]} "@" -r)
-		  con="$(join_by "@" $con)"
-		  strings="$strings $con"
-	  done
-	  for i in ${!folders[@]}; do
-		  fol=$(split_by ${folders[$i]} "@" -r)
-		  fol="$(join_by "@" $fol)"
-		  strings="$strings @$fol"
-	  done
+		  strings="$strings ${connections[@]} ${folders[@]}"
 	  COMPREPLY=($(compgen -W "$strings" "${COMP_WORDS[1]}"))
   fi
   if [ "${#COMP_WORDS[@]}" = "3" ]; then
@@ -51,11 +42,7 @@ _conn()
 	  if [ "${COMP_WORDS[1]}" = "profile" ]; then strings="add remove delete edit modify show list help"; fi
 	  if [[ "${COMP_WORDS[1]}" =~ ^add|rm|remove|del|delete|mod|modify|edit|ren|rename|show$ ]]; then strings="help"; fi
 	  if [[ "${COMP_WORDS[1]}" =~ ^rm|remove|del|delete|mod|modify|edit|ren|rename|show$ ]]; then 
-		  for i in ${!connections[@]}; do
-		  con=$(split_by ${connections[$i]} "@" -r)
-		  con="$(join_by "@" $con)"
-	      strings="$strings $con"
-		  done
+	      strings="$strings ${connections[@]}"
 	  fi
 	  COMPREPLY=($(compgen -W "$strings" "${COMP_WORDS[2]}"))
   fi
@@ -64,19 +51,13 @@ _conn()
 	  if [ "${COMP_WORDS[1]}" = "folder" ]; then
 		if [[ "${COMP_WORDS[2]}" =~ ^add|rm|remove|del|delete|ren|rename$ ]] ; then strings="help"; fi
 		if [[ "${COMP_WORDS[2]}" =~ ^rm|remove|del|delete|ren|rename$ ]] ; then
-			for i in ${!folders[@]}; do
-			  fol=$(split_by ${folders[$i]} "@" -r)
-			  fol="$(join_by "@" $fol)"
-			  strings="$strings $fol"
-		    done
+			  strings="$strings ${folders[@]}"
 		fi
 	  fi
 	  if [ "${COMP_WORDS[1]}" = "profile" ]; then
 		if [[ "${COMP_WORDS[2]}" =~ ^add|rm|remove|del|delete|mod|modify|edit|show$ ]] ; then strings="help"; fi
 		if [[ "${COMP_WORDS[2]}" =~ ^rm|remove|del|delete|mod|modify|edit|show$ ]] ; then
-			for prof in ${profiles[@]}; do
-			  strings="$strings $prof"
-		    done
+			  strings="$strings ${profiles[@]}"
 		fi
 	  fi
 	  COMPREPLY=($(compgen -W "$strings" "${COMP_WORDS[3]}"))
