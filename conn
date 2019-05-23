@@ -29,12 +29,14 @@ len["mod"]=2
 len["list"]=1
 len["ren"]=3
 len["show"]=2
+len["bulk"]=1
 len["help"]=1
 len["add help"]=2
 len["del help"]=2
 len["mod help"]=2
 len["ren help"]=2
 len["show help"]=2
+len["bulk help"]=2
 len["folder add"]=3
 len["folder del"]=3
 len["folder ren"]=4
@@ -62,12 +64,14 @@ max["mod"]=3
 max["list"]=0
 max["ren"]=3
 max["show"]=3
+max["bulk"]=0
 max["help"]=0
 max["add help"]=0
 max["del help"]=0
 max["mod help"]=0
 max["ren help"]=0
 max["show help"]=0
+max["bulk help"]=0
 max["folder add"]=2
 max["folder del"]=2
 max["folder ren"]=2
@@ -98,7 +102,7 @@ if [[ $1 =~ $namesif ]]; then
 		if [[ "$args" =~ ^ren|rename$ ]]; then args="ren"; fi
 		if [[ "$args" =~ ^help|-h|--help$ ]]; then args="help"; fi
 		if [[ "$args" =~ ^list|ls$ ]]; then args="list"; fi
-		if [[ "${comm[*]: -1}" =~ ^add|del|mod|ren|show|list|help$ ]] && [ ! "$args" = "help" ]; then and+=("$args"); command+=("$args"); else
+		if [[ "${comm[*]: -1}" =~ ^add|del|mod|ren|show|list|help|bulk$ ]] && [ ! "$args" = "help" ]; then and+=("$args"); command+=("$args"); else
 		comm+=("$args")
 		command+=("$args");	fi
 	done
