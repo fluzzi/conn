@@ -22,4 +22,6 @@ invalid(){
   if [ $1 -eq 24 ]; then echo "Connection \"$2\" do not exist" 1>&2; exit 124; fi
   if [ $1 -eq 25 ]; then echo "Invalid address \"$2\"" 1>&2; exit 125; fi
   if [ $1 -eq 26 ]; then echo "No connections found, try: conn help" 1>&2; exit 126; fi
+  # errors for bulk
+  if [ $1 -eq 30 ]; then echo "duplicates nodes found" 1>&2; exit 130; fi
 }

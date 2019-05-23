@@ -75,7 +75,7 @@ folder(){
 	  echo Subfolder \"$oldsubfolder@$folder\" renamed to \"$newsubfolder@$folder\" 
   exit 0; fi
   if [ $1 = "list" ]; then 
-	jq -r 'paths as $path | select(getpath($path) == "folder" or getpath($path) == "subfolder") | $path |  map(select(. != "type")) | join("@")' $DATADIR/connections.json
+	jq -r 'paths as $path | select(getpath($path) == "folder" or getpath($path) == "subfolder") | $path | [map(select(. != "type"))[-1,-2]] | map(select(. !=null)) | join("@")' $DATADIR/connections.json
     exit 0
   fi
 }

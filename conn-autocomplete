@@ -32,7 +32,7 @@ _conn()
     mapfile -t folders < <(jq -r 'paths as $path | select(getpath($path) == "folder") or select(getpath($path) == "subfolder") | $path |  [map(select(. != "type"))[-1,-2,-3]] | map(select(. !=null)) | join("@")' $DATADIR/connections.json)
 	mapfile -t profiles < <(jq -r 'keys[]' $DATADIR/profiles.json)
   if [ "${#COMP_WORDS[@]}" = "2" ]; then
-	  strings="add remove delete edit modify rename show list folder profile help"
+	  strings="add remove delete edit modify rename show list folder profile bulk help"
 		  strings="$strings ${connections[@]} ${folders[@]}"
 	  COMPREPLY=($(compgen -W "$strings" "${COMP_WORDS[1]}"))
   fi

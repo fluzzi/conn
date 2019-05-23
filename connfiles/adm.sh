@@ -343,3 +343,123 @@ adm(){
       exit 0
   fi
 }
+bulk(){
+    folder=""
+    subfolder=""
+    echo Adding connections in bulk mode
+	echo
+    echo "list connections names using comma as separation"
+    inputregex Connections "^[$validfile]+([,][$validfile]+){1,}$"
+    IFS=',' read -r -a nodes <<< "$valueregex"
+	echo
+    nodesrep=($(printf "%s\n" "${nodes[@]}" | sort -u | tr '\n' ' '))
+    [[ ${#nodes[@]} -eq ${#nodesrep[@]} ]] || invalid 30
+    echo "Add the location to store the new connections"
+    echo "you can use <folder> <subfolder@folder> or leave it empty"
+    inputregex Location "^[$validfile]+[@]?[$validfile]+$|^$" folder  
+    IFS='@' read -r -a location <<< "$valueregex"
+    if [ ${#location[@]} -eq 1 ]; then
+        folder=\"${location[0]}\" 
+    elif [ ${#location[@]} -eq 2 ]; then
+        folder=\"${location[1]}\" 
+        subfolder=\"${location[0]}\" 
+    fi
+    echo
+    echo "list connections hostname or IP using comma as separation or add a single value to use on all connections"
+    inputregex Hosntames/IP "(^[A-Za-z0-9.-]+$)|((^[A-Za-z0-9.-]+)([,]([A-Za-z0-9.-]+)){$(( ${#nodes[@]} - 1 ))}$)" 
+    IFS=',' read -r -a hostnames <<< "$valueregex"
+	echo
+    echo do you want to set a protocol for these connections? if empty it will use the default profile setting
+	echo options: ssh,telnet
+	echo you can use the configured setting in a profile using @profilename
+    echo "list connections protocol using comma as separation or add a single value or profile to use on all connections"
+    inputregex Protocol "(^ssh$|^telnet$|^$|^@[$validfile]+$)|((^ssh|^telnet)([,](ssh|telnet)){$(( ${#nodes[@]} - 1 ))}\$)"
+    IFS=',' read -r -a protocols <<< "$valueregex"
+	echo
+    echo do you want to set a port for these connections? if empty it will use the default profile setting
+	echo options: 1-65535
+	echo you can use the configured setting in a profile using @profilename
+    echo "list connections port using comma as separation or add a single value or profile to use on all connections"
+    inputregex Ports "(^[1-9]$|^[1-9][0-9]$|^[1-9][0-9]{2}$|^[1-9][0-9]{3}$|^[1-5][0-9]{4}$|^6[0-4][0-9]{3}$|^65[0-4][0-9]{2}$|^655[0-2][0-9]$|^6553[0-5]$|^$|^@[$validfile]+$)|((^[1-9]|^[1-9][0-9]|^[1-9][0-9]{2}|^[1-9][0-9]{3}|^[1-5][0-9]{4}|^6[0-4][0-9]{3}|^65[0-4][0-9]{2}|^655[0-2][0-9]|^6553[0-5])([,]([1-9]|[1-9][0-9]|[1-9][0-9]{2}|[1-9][0-9]{3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])){$(( ${#nodes[@]} - 1 ))}\$)"
+    IFS=',' read -r -a ports <<< "$valueregex"
+    echo
+	echo do you want to set a user for these connections? if not, please leave empty
+	echo you can use the configured setting in a profile using @profilename
+    echo "list users using comma as separation or add a single value or profile to use on all connections"
+    inputregex User "(^[^,]+$|^$)|((^[^,]+)([,]([^,]+)){$(( ${#nodes[@]} - 1 ))}$)" 
+    IFS=',' read -r -a users <<< "$valueregex"
+    echo
+	  echo do you want to set a password for these connections? if not, please leave empty
+	  echo you can use the configured setting in a profile using @profilename
+	  echo if your password start with @, you can duplicate the @ to escape profile names. 
+	  echo Example: @@password will work as @password and not a profile name
+	  echo if you need to pass multiple passwords \(ex. using jumphost\) you can use profiles:
+	  echo Example: \@profile1\|\@profile1\|\@profile2
+	  while true; do
+	    echo -n Password:
+	    read -s password
+	    IFS='|' read -ra that <<< $password
+		for ti in "${!that[@]}"; do that[$ti]="${that[$ti]:1}"; done
+		if [[ $password =~ (^@.+$) ]] && [[ ! $password =~ (^@@.+$) ]] && [ -z $(isinarray -m ${#that[@]} ${that[@]} ${allprofiles[@]}) ]; then echo; echo profile \"$(join_by "|" ${that[@]})\" not found, please try again; echo;
+		elif [ ! -z $password ] && ( [[ ! $password =~ (^@.+$) ]] || [[ $password =~ (^@@.+$) ]] ); then
+		    if [[ $password =~ (^@@.+$) ]]; then password=${password:1}; fi
+            password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`;break; else break; echo
+         fi
+	done
+	echo 
+	echo
+    echo do you want to set other options for these connections? if not, please leave empty
+	echo you can pass extra ssh or telnet options to the session like -X, -L or combined options
+	echo you can use the configured setting in a profile using @profilename
+	inputregex Options "(^[^,]+$|^$)|((^[^,]+)([,]([^,]+)){$(( ${#nodes[@]} - 1 ))}$)"
+    IFS=',' read -r -a options <<< "$valueregex"
+	echo
+	echo do you want to save the session logs for these connections? if not, please leave empty
+	echo set the location and file name, you can use Date command to add timestamp
+	echo 'you can also use the following variables ${hostname}, ${id}, ${port} and ${user}'
+	echo example: '/home/user/logs/${hostname}_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
+	echo you can use the configured setting in a profile using @profilename
+	inputregex Logs "(^[^,]+$|^$)|((^[^,]+)([,]([^,]+)){$(( ${#nodes[@]} - 1 ))}$)"
+    IFS=',' read -r -a logs <<< "$valueregex"
+    echo
+    sub1=""
+    getvalues=(jq -r \'\. \| \.$folder \| \.$subfolder \' $DATADIR/connections.json)
+    [[ ${#location[@]} -eq 0 ]] || sub1=$(eval ${getvalues[@]})
+    sub1=${sub1:1:-1}
+    ignored=0
+    getconnections=(jq -r \'\. \| \.$folder \| \.$subfolder \| keys\[\]\' $DATADIR/connections.json)
+    mapfile -t connections < <(eval ${getconnections[@]})
+    for i in ${!nodes[@]}; do
+        if [ ! -z $(isinarray ${nodes[$i]} ${connections[@]}) ]; then
+            echo "Connection ${nodes[$i]} already exist. Ignoring it"
+            ((ignored++))
+            continue
+        fi
+        node=${nodes[$i]}
+        [[ "${#hostnames[@]}" -eq 1 ]] && hostname="${hostnames[0]}" || hostname="${hostnames[$i]}"
+        [[ "${#protocols[@]}" -eq 1 ]] && protocol="${protocols[0]}" || protocol="${protocols[$i]}"
+        [[ "${#ports[@]}" -eq 1 ]] && port="${ports[0]}" || port="${ports[$i]}"
+        [[ "${#users[@]}" -eq 1 ]] && user="${users[0]}" || user="${users[$i]}"
+        password="${password}"
+        [[ "${#options[@]}" -eq 1 ]] && option="${options[0]}" || option="${options[$i]}"
+        [[ "${#logs[@]}" -eq 1 ]] && log="${logs[0]}" || log="${logs[$i]}"
+        sub2="\"$node\":{\"type\":\"connection\", \"host\":\"$hostname\", \"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$option\", \"logs\":\"$log\"}"
+        [[ -z $sub1 ]] && sub1="$sub2" || sub1="$sub1,$sub2"
+    done
+    [[ "$ignored" -eq "${#nodes[@]}" ]] && { echo Nothing to add.; exit 0; }
+    case ${#location[@]} in
+		0)
+		jq -r ". | . + {$sub1}" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
+		;;
+		1)
+		jq -r ". | . + {$folder:{$sub1}}" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
+		;;
+		2)
+		sub=(jq -c \'.$folder \| \. \+ \{$subfolder\:\{$sub1\}\}\'  $DATADIR/connections.json)
+		sub=$(eval ${sub[@]})
+		sub=${sub:1:-1}
+		jq -r ". | . + {$folder:{$sub}}" $DATADIR/connections.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/connections.json; chmod  600 $DATADIR/connections.json
+		;;
+	 esac
+    echo $(( ${#nodes[@]} - $ignored )) connections added.
+}

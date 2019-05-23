@@ -130,6 +130,29 @@ help(){
   echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
   echo
   exit 0; fi
+  if [ "$1" = "bulk" ]; then 
+  echo
+  echo "Usage:" 
+  echo "   $SCRIPT_NAME bulk"
+  echo "        Let you add multiple connections at once."
+  echo "        It will request the parameters of the connections."
+  echo "        List connections and parameters separated by comma."
+  echo "        All parameters could be a single value for all connections, or individual value per each connection."
+  echo "        Any optional parameter can be empty or linked to a profile using: <@profile_name>"
+  echo     
+  echo "        Mandatory parameters:"  
+  echo "               host            : IP or hostname of the device."
+  echo "        Optional parameters:"
+  echo "               location        : Folder to store the connections. <folder|subfolder@folder>"
+  echo "               protocol        : Protocol to use on the connection. <telnet|ssh|@profile>"
+  echo "               port            : Port to use for the connection. <1-65535|@profile>"
+  echo "               user            : username to use on the connection. <youruser|@profile>"
+  echo "               password        : password to use on the connection, stored encrypted.<pass|@profile>"
+  echo "               options         : Options to pass to the protocol. Ex. <\"-X -c aes128-cbc\"|@profile>"
+  echo "               logs            : Location to store the connection logs. You can use date command."
+  echo "                                 </home/user/logs/\${hostname}-\$(date '+%Y-%M-%d_%T').log|@profile>"
+  echo
+  exit 0; fi
   if [ "$1" = "del" ]; then 
   echo
   echo "Usage:" 
@@ -201,6 +224,7 @@ help(){
   echo "   $SCRIPT_NAME del|rm|remove <connection[@subfolder][@folder]>"
   echo "   $SCRIPT_NAME mod|modify|edit <connection[@subfolder][@folder]>"
   echo "   $SCRIPT_NAME ren|rename <connection[@subfolder][@folder]> <new_connection_name>"
+  echo "   $SCRIPT_NAME bulk"
   echo "   $SCRIPT_NAME show <connection[@subfolder][@folder]>"
   echo "   $SCRIPT_NAME ls|list"
   echo

@@ -35,6 +35,7 @@ inputregex(){
 	this=${valueregex#?}
 	if [[ ! $valueregex =~ $2 ]]; then echo wrong input, please try again;
 	elif [[ $valueregex =~ (^@.+$) ]] && [ -z $(isinarray $this ${allprofiles[@]}) ]; then echo profile $this not found, please try again;
+    elif [[ $3 == "folder" ]] && [[ ! $valueregex =~ ^$ ]]&& [ -z $(isinarray $valueregex ${allfolders[@]}) ]; then echo location $valueregex not found, please try again;    
 	  else
 		break
 	  fi
