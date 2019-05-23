@@ -40,7 +40,7 @@ _conn()
 	  strings=""
 	  if [ "${COMP_WORDS[1]}" = "folder" ]; then strings="add remove delete rename list help"; fi
 	  if [ "${COMP_WORDS[1]}" = "profile" ]; then strings="add remove delete edit modify show list help"; fi
-	  if [[ "${COMP_WORDS[1]}" =~ ^add|rm|remove|del|delete|mod|modify|edit|ren|rename|show$ ]]; then strings="help"; fi
+	  if [[ "${COMP_WORDS[1]}" =~ ^add|rm|remove|del|delete|mod|modify|edit|ren|rename|show|bulk$ ]]; then strings="help"; fi
 	  if [[ "${COMP_WORDS[1]}" =~ ^rm|remove|del|delete|mod|modify|edit|ren|rename|show$ ]]; then 
 	      strings="$strings ${connections[@]}"
 	  fi
