@@ -97,12 +97,12 @@ and=()
 command=()
 if [[ $1 =~ $namesif ]]; then
 	for args in $@; do
-		if [[ "$args" =~ ^del|delete|rm|remove$ ]]; then args="del"; fi
-		if [[ "$args" =~ ^mod|modify|edit$ ]]; then args="mod"; fi
-		if [[ "$args" =~ ^ren|rename$ ]]; then args="ren"; fi
-		if [[ "$args" =~ ^help|-h|--help$ ]]; then args="help"; fi
-		if [[ "$args" =~ ^list|ls$ ]]; then args="list"; fi
-		if [[ "${comm[*]: -1}" =~ ^add|del|mod|ren|show|list|help|bulk$ ]] && [ ! "$args" = "help" ]; then and+=("$args"); command+=("$args"); else
+        if [[ "$args" =~ ^(del|delete|rm|remove)$ ]]; then args="del"; fi
+        if [[ "$args" =~ ^(mod|modify|edit)$ ]]; then args="mod"; fi
+        if [[ "$args" =~ ^(ren|rename)$ ]]; then args="ren"; fi
+        if [[ "$args" =~ ^(help|-h|--help)$ ]]; then args="help"; fi
+        if [[ "$args" =~ ^(list|ls)$ ]]; then args="list"; fi
+        if [[ "${comm[*]: -1}" =~ ^(add|del|mod|ren|show|list|help|bulk)$ ]] && [ ! "$args" = "help" ]; then and+=("$args"); command+=("$args"); else
 		comm+=("$args")
 		command+=("$args");	fi
 	done
@@ -114,7 +114,7 @@ IFS='@' read -ra ADDR <<< ${and[0]}
 if [ ${#ADDR[@]} -gt "${max[${comm[@]}]}" ]; then invalid $((${max[${comm[@]}]} + 4)); fi
 if [[ ${ADDR[0]} =~ $namesif || ${and[1]} =~ $namesif || ${ADDR[1]} =~ $namesif || ${ADDR[2]} =~ $namesif ]]; then invalid 4 ; fi
 if [ "${comm[*]: -1}" = "help" ]; then comm=("${comm[*]: -1}" "$(eval join_by "-" ${comm[@]::${#comm[@]}-1})"); fi
-if [[ "${comm[0]}" =~ ^del|mod|ren|add|show|list$ ]]; then comm=("adm"  "${comm[@]}"); fi
+if [[ "${comm[0]}" =~ ^(del|mod|ren|add|show|list)$ ]]; then comm=("adm"  "${comm[@]}"); fi
 eval "${comm[@]} ${ADDR[0]} ${and[1]} ${ADDR[2]} ${ADDR[1]}"
 exit 0	
 fi
