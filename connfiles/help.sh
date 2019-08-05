@@ -210,6 +210,7 @@ help(){
   echo "               -p <port>       : Override connection port."
   echo "               -P <protocol>   : Override connection protocol."
   echo "               -o \"<options>\"  : Override connection protocol options"
+  echo "               -L \"<logfile>\"  : Override logging configuration."
   echo "               -s              : Clear connection password."
   echo    
   echo "   Generic commands:"  
