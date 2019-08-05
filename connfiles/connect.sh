@@ -66,13 +66,14 @@ else       # Reset in case getopts has been used previously in the shell.
 	while [ $# -gt 0 ]; do
 		OPTIND=1
 		tot=$OPTIND
-		while getopts l:p:P:o:s opt; do
+		while getopts l:p:P:o:L:s opt; do
 		  case "$opt" in
 		   l) flags[user]="$OPTARG";;
 		   p) flags[port]="$OPTARG";;
 		   P) flags[protocol]="$OPTARG";;
 		   o) flags[options]="$OPTARG";;
 		   s) flags[password]="null";;
+           L) flags[logging]="$OPTARG";;
 		   *) exit 108 
 		  esac
 		done
@@ -118,6 +119,7 @@ else       # Reset in case getopts has been used previously in the shell.
 		if [ ! -z "${flags[port]}" ]; then args[3]="${flags[port]}"; fi
 		if [ ! -z "${flags[user]}" ]; then args[4]="${flags[user]}"; fi
 		if [ ! -z "${flags[options]}" ]; then args[6]="${flags[options]}"; fi
+		if [ ! -z "${flags[logging]}" ]; then args[7]="${flags[logging]}"; fi
 		if [ ! -z "${flags[password]}" ] || [ ! -z "${flags[user]}" ]; then args[5]=""; fi
 	else
 		invalid 3
