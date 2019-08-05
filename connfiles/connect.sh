@@ -19,7 +19,7 @@ if [ $# -eq 0 ] || ( [ $# -eq 1 ] && [[ $1 =~ ^@.*$ ]] && [[ ! $1 =~ ^.*@$ ]] &&
 		else 
 			connections=(${connections[$(($valuerange -1))]})
             con=$(split_by ${connections[@]} "@" -r)
-			con="$(join_by "@" ${connections[$i]})"
+			con="$(join_by "@" $con)"
 			declare args
 			get_values ${con} ${ADDR[1]} ${ADDR[2]}
 		fi
