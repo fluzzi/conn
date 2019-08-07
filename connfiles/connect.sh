@@ -145,12 +145,12 @@ if [ $protocol = "ssh" ]; then
 	if [ ! -z $port ]; then cmd="$cmd -p $port"; fi
     if [ ! -z "$options" ]; then cmd="$cmd $options"; fi
 	if [ ! -z "${password[0]}" ]; then wordpass="expect\
-	\"(yes/no)\" { send \"yes\r\";exp_continue}\
+	\"yes/no\" { send \"yes\r\";exp_continue}\
 	$wordpass -re {(assword:|sername:)}; send \"${password[0]}\r\"\
 	"
 	p=1
 	while [ $p -lt "${#password[@]}" ] ; do
-	wordpass="$wordpass ; expect \"(yes/no)\" { send \"yes\r\";exp_continue} \"assword:\"; send \"${password[$p]}\r\""
+	wordpass="$wordpass ; expect \"yes/no\" { send \"yes\r\";exp_continue} \"assword:\"; send \"${password[$p]}\r\""
 	((p++))
 	done
 	fi
