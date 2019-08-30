@@ -134,7 +134,7 @@ IFS='|' read -ra that <<< "${args[5]}"
 else
 	password=(${args[5]})
 fi
-id=${args[0]};hostname=${args[1]};protocol=${args[2]};port=${args[3]};user=${args[4]};options=${args[6]};eval logs=${args[7]}
+unique=${args[0]%@*};id=${args[0]};hostname=${args[1]};protocol=${args[2]};port=${args[3]};user=${args[4]}; options=${args[6]/'$unique'/$unique};eval logs=${args[7]}
 if [ $idletime -gt 0 ]; then 
 interact=" interact timeout $idletime { send \x05 }"
 else
@@ -146,6 +146,13 @@ if [ $protocol = "ssh" ]; then
     if [ ! -z "$options" ]; then cmd="$cmd $options"; fi
 	if [ ! -z "${password[0]}" ]; then wordpass="expect\
 	\"yes/no\" { send \"yes\r\";exp_continue}\
+    \"refused\" { exit 1}\
+	\"supported\" { exit 1}\
+	\"cipher\" { exit 1}\
+	\"sage:\" { exit 1}\
+	\"timeout\" { puts  \"connection timeout\"; exit 1}\
+	\"unavailable\" { puts \"connection timeout\"; exit 1}\
+	\"closed\" { exit 1}\
 	$wordpass -re {(assword:|sername:)}; send \"${password[0]}\r\"\
 	"
 	p=1
@@ -154,22 +161,32 @@ if [ $protocol = "ssh" ]; then
 	((p++))
 	done
 	fi
-	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $wordpass; $interact" 2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs);
-	else /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $wordpass; $interact"  2> /dev/null; fi
+	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 10; log_user 0; eval spawn $cmd; log_user 1; $wordpass; $interact" 2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs);
+	else /usr/bin/expect -c "set timeout 10; log_user 0; eval spawn $cmd; log_user 1; $wordpass; $interact"  2> /dev/null; fi
 elif [ $protocol = "telnet" ]; then
 	cmd="telnet $hostname $port $options"
 	if [ ! -z ${password[0]} ] ; then userpass="expect\
 	\"sername:\" { send \"$user\r\";exp_continue}\
+    \"refused\" { exit 1}\
+	\"sage:\" { exit 1}\
+	\"timeout\" { puts  \"connection timeout\"; exit 1}\
+	\"unavailable\" { puts \"connection timeout\"; exit 1}\
+	\"closed\" { exit 1}\
 	\"assword:\"; send \"${password[0]}\r\"\
 	"
 	fi
 	if [ ! -z $user ] && [ -z ${password[0]} ]; then userpass="expect\
 	\"sername:\" { send \"$user\r\";exp_continue}\
+    \"refused\" { exit 1}\
+	\"sage:\" { exit 1}\
+	\"timeout\" { puts  \"connection timeout\"; exit 1}\
+	\"unavailable\" { puts \"connection timeout\"; exit 1}\
+	\"closed\" { exit 1}\
 	\"assword:\"; send \"${password[0]}\"\
 	"
 	fi
-	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs) ;
-	else /usr/bin/expect -c "set timeout 60; log_user 0; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null ; fi
+	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 10; log_user 0; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs) ;
+	else /usr/bin/expect -c "set timeout 10; log_user 0; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null ; fi
 else 
 invalid 9 $protocol
 fi
