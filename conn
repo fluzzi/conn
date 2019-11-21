@@ -102,7 +102,10 @@ if [[ $1 =~ $namesif ]]; then
         if [[ "$args" =~ ^(ren|rename)$ ]]; then args="ren"; fi
         if [[ "$args" =~ ^(help|-h|--help)$ ]]; then args="help"; fi
         if [[ "$args" =~ ^(list|ls)$ ]]; then args="list"; fi
-        if [[ "${comm[*]: -1}" =~ ^(add|del|mod|ren|show|list|help|bulk)$ ]] && [ ! "$args" = "help" ]; then and+=("$args"); command+=("$args"); else
+        if [[ "${comm[@]}" =~ ^(add|del|mod|ren|show|list|help|bulk)$ ]] && ([ "$args" = "folder" ] || [ "$args" = "profile" ]); then
+        comm=("$args" "${comm[@]}")
+        command=("$args" "${command[@]}")
+        elif [[ "${comm[*]: -1}" =~ ^(add|del|mod|ren|show|list|help|bulk)$ ]] && [ ! "$args" = "help" ]; then and+=("$args"); command+=("$args"); else
 		comm+=("$args")
 		command+=("$args");	fi
 	done
