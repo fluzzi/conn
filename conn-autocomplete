@@ -40,7 +40,11 @@ _conn()
 	  strings=""
 	  if [ "${COMP_WORDS[1]}" = "folder" ]; then strings="add remove delete rename list help"; fi
 	  if [ "${COMP_WORDS[1]}" = "profile" ]; then strings="add remove delete edit modify show list help"; fi
-	  if [[ "${COMP_WORDS[1]}" =~ ^add|rm|remove|del|delete|mod|modify|edit|ren|rename|show|bulk$ ]]; then strings="help"; fi
+	  if [[ "${COMP_WORDS[1]}" =~ ^mod|modify|edit|show$ ]]; then strings="profile"; fi
+      if [[ "${COMP_WORDS[1]}" =~ ^ren|rename$ ]]; then strings="folder"; fi
+	  if [[ "${COMP_WORDS[1]}" =~ ^add|rm|remove|del|delete|list|help$ ]]; then strings="profile folder"; fi
+      if [[ "${COMP_WORDS[1]}" =~ ^bulk$ ]]; then strings="help"; fi
+	  if [[ "${COMP_WORDS[1]}" =~ ^add|rm|remove|del|delete|mod|modify|edit|ren|rename|show$ ]]; then strings="$strings help"; fi
 	  if [[ "${COMP_WORDS[1]}" =~ ^rm|remove|del|delete|mod|modify|edit|ren|rename|show$ ]]; then 
 	      strings="$strings ${connections[@]}"
 	  fi
@@ -54,9 +58,21 @@ _conn()
 			  strings="$strings ${folders[@]}"
 		fi
 	  fi
+	  if [ "${COMP_WORDS[2]}" = "folder" ]; then
+		if [[ "${COMP_WORDS[1]}" =~ ^add|rm|remove|del|delete|ren|rename$ ]] ; then strings="help"; fi
+		if [[ "${COMP_WORDS[1]}" =~ ^rm|remove|del|delete|ren|rename$ ]] ; then
+			  strings="$strings ${folders[@]}"
+		fi
+	  fi
 	  if [ "${COMP_WORDS[1]}" = "profile" ]; then
 		if [[ "${COMP_WORDS[2]}" =~ ^add|rm|remove|del|delete|mod|modify|edit|show$ ]] ; then strings="help"; fi
 		if [[ "${COMP_WORDS[2]}" =~ ^rm|remove|del|delete|mod|modify|edit|show$ ]] ; then
+			  strings="$strings ${profiles[@]}"
+		fi
+	  fi
+	  if [ "${COMP_WORDS[2]}" = "profile" ]; then
+		if [[ "${COMP_WORDS[1]}" =~ ^add|rm|remove|del|delete|mod|modify|edit|show$ ]] ; then strings="help"; fi
+		if [[ "${COMP_WORDS[1]}" =~ ^rm|remove|del|delete|mod|modify|edit|show$ ]] ; then
 			  strings="$strings ${profiles[@]}"
 		fi
 	  fi
