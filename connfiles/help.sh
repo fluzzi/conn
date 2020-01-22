@@ -68,6 +68,7 @@ help(){
   echo "        It will request the parameters of the profile. Any parameter can be empty"
   echo     
   echo "        Available parameters:"
+  echo "               host            : IP or hostname of the device."
   echo "               protocol        : Protocol to use on the connection. <telnet|ssh>"
   echo "               port            : Port to use for the connection. <1-65535>"
   echo "               user            : username to use on the connection. <youruser>"
@@ -93,6 +94,7 @@ help(){
   echo "        It will ask if you want to change the parameters of the profile."
   echo     
   echo "        Available parameters:"
+  echo "               host            : IP or hostname of the device."
   echo "               protocol        : Protocol to use on the connection. <telnet|ssh>"
   echo "               port            : Port to use for the connection. <1-65535>"
   echo "               user            : username to use on the connection. <youruser>"
@@ -116,7 +118,7 @@ help(){
   echo "Usage:" 
   echo "   $SCRIPT_NAME add <connection[@subfolder][@folder]>"
   echo "        It will request the parameters of the connection."
-  echo "        Any optional parameter can be empty or linked to a profile using: <@profile_name>"
+  echo "        Any parameter can linked to a profile using: <@profile_name>"
   echo     
   echo "        Mandatory parameters:"  
   echo "               host            : IP or hostname of the device."

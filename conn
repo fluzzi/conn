@@ -4,8 +4,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/.conn"
 DATADIR=$HOME/.conn
 SCRIPT_NAME="$(basename "$0")"
 source $DIR/firstrun.sh
-if [ ! -f $DATADIR/.osk ]; then firstrun; fi
 source $DIR/loadconfig.sh
+if [ $frun == "true" ]; then firstrun; fi
 source $DIR/errors.sh
 source $DIR/var.sh
 source $DIR/functions.sh

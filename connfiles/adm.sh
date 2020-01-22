@@ -19,6 +19,7 @@ adm(){
 	  if [ ! -z $(isinarray $connection ${connections[@]}) ]; then invalid 20 $(join_by @ $connection $subfolder $folder); fi
 	  echo Adding connection $(join_by @ $connection $subfolder $folder)
 	  echo
+	  echo you can use the configured setting in a profile using @profilename
 	  inputregex Hostname/IP '(^.+$)'
 	  host=$valueregex
 	  echo
@@ -147,6 +148,7 @@ adm(){
 	  if [ ! -z $(modify Hostname) ]; then
 		  echo
 		  echo current hostname: ${oldvalues[1]}
+	      echo you can use the configured setting in a profile using @profilename
 		  inputregex Hostname/IP '(^.+$)'
 		  host=$valueregex
 	  else
