@@ -5,6 +5,10 @@ profile(){
 	  if [ ! -z $(isinarray $profile ${profiles[@]}) ]; then invalid 10 $profile; fi
 	  echo Adding profile $profile
 	  echo
+	  echo do you want to set a host for this profile? if not, please leave empty
+	  inputregex Hostname/IP '(^.+$)'
+	  host=$valueregex
+	  echo
 	  echo do you want to set a protocol for this profile? if not, please leave empty
 	  echo options: ssh,telnet
 	  inputregex Protocol '(^ssh$|^telnet$|^$)'
@@ -45,7 +49,7 @@ profile(){
 	  echo example: '/home/user/logs/${hostname}_$(date '"'"'+%Y-%M-%d_%T'"'"').log'
 	  inputregex Logging '.*'
 	  logs=$valueregex
-	  jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
+	  jq -r ". | . + {\"$profile\":{\"host\":\"$host\", \"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
 	  echo
 	  echo Profile \"$profile\" created correctly
   exit 0; fi
@@ -66,6 +70,15 @@ profile(){
 	  mapfile -t oldvalues < <(jq -r ".\"$profile\"[]" $DATADIR/profiles.json)
 	  echo Editing profile $profile
 	  echo
+	  if [ ! -z $(modify Host) ]; then
+		  echo
+	      echo do you want to set a host for this profile? if not, please leave empty
+	      inputregex Hostname/IP '(^.+$)'
+	      host=$valueregex
+	  else
+	      protocol=${oldvalues[0]}
+      fi
+	  echo
 	  if [ ! -z $(modify Protocol) ]; then
 		  echo
 		  if [ $profile == "default" ]; then
@@ -74,7 +87,7 @@ profile(){
 			echo do you want to set a protocol for this profile? if not, please leave empty
 		  fi
 		  echo options: ssh,telnet
-		  echo current protocol: ${oldvalues[0]}
+		  echo current protocol: ${oldvalues[1]}
 		  if [ $profile == "default" ]; then
 			inputregex Protocol '(^ssh$|^telnet$)'
 		  else
@@ -82,7 +95,7 @@ profile(){
 		  fi
 		  protocol=$valueregex
 	  else
-	      protocol=${oldvalues[0]}
+	      protocol=${oldvalues[1]}
 	  fi
 	  echo
 	  if [ ! -z $(modify Port) ]; then
@@ -90,30 +103,30 @@ profile(){
 		if [ -z $protocol ]; then
 		  echo do you want to set a port for this profile? if not, please leave empty
 		  echo options: 1-65535
-		  echo current port: ${oldvalues[1]}
+		  echo current port: ${oldvalues[2]}
 		  inputrange Port 1 65535
 		  port=$valuerange
 		else
 		  echo do you want to set a port for this profile? if $protocol default just leave empty
 		  echo options: 1-65535
-		  echo current port: ${oldvalues[1]}
+		  echo current port: ${oldvalues[2]}
 		  inputrange Port 1 65535
 		  port=$valuerange
 		  if [ $protocol = "ssh" ] && [ -z "$port" ]; then port=22; fi
 		  if [ $protocol = "telnet" ] && [ -z "$port" ]; then port=23; fi
 		fi
 	  else
-	      port=${oldvalues[1]}
+	      port=${oldvalues[2]}
 	  fi
 	  echo
 	  if [ ! -z $(modify User) ]; then
 		   echo
 		   echo do you want to set a user for this profile? if not, please leave empty
-		   echo current user: ${oldvalues[2]}
+		   echo current user: ${oldvalues[3]}
 		   inputregex User '.*'
 		   user=$valueregex
 	  else
-	      user=${oldvalues[2]}
+	      user=${oldvalues[3]}
 	  fi
 	  echo
 	  if [ ! -z $(modify Password) ]; then
@@ -124,18 +137,18 @@ profile(){
 		   password=`echo $password | openssl rsautl -inkey $DATADIR/.osk -encrypt -out >(base64 -w 0)`
 		   echo 
 	  else
-	      password=${oldvalues[3]}
+	      password=${oldvalues[4]}
 	  fi
 	  echo
 	  if [ ! -z $(modify Options) ]; then
 		   echo
 		   echo do you want to set other options for this profile? if not, please leave empty
 		   echo you can pass extra ssh or telnet options to the session like -X, -L or combined options
-		   echo current options: ${oldvalues[4]}
+		   echo current options: ${oldvalues[5]}
 		   inputregex Options '.*'
 		   options=$valueregex
 	  else
-	      options=${oldvalues[4]}
+	      options=${oldvalues[5]}
 	  fi
 	  echo
 	  if [ ! -z $(modify Logs) ]; then
@@ -147,16 +160,16 @@ profile(){
 		   inputregex Logging '.*'
 		   logs=$valueregex
 	  else
-	      logs=${oldvalues[5]}
+	      logs=${oldvalues[6]}
 	  fi
-	  newvalues=("$protocol" "$port" "$user" "$password" "$options" "$logs")
+	  newvalues=("$host" "$protocol" "$port" "$user" "$password" "$options" "$logs")
 	  old=${oldvalues[@]}
 	  new=${newvalues[@]}
 	  if [ "$old" == "$new" ] ; then
 		echo
 		echo nothing to do here.
 	  else
-	    jq -r ". | . + {\"$profile\":{\"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
+	    jq -r ". | . + {\"$profile\":{\"host\":\"$host\", \"protocol\":\"$protocol\", \"port\":\"$port\", \"user\":\"$user\", \"password\":\"$password\", \"options\":\"$options\", \"logs\":\"$logs\"}}" $DATADIR/profiles.json > $DATADIR/INPUT.tmp && mv $DATADIR/INPUT.tmp $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json
 		echo
 		echo Profile \"$profile\" edited correctly
 	  fi
