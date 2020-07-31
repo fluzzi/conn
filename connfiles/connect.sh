@@ -66,13 +66,14 @@ else       # Reset in case getopts has been used previously in the shell.
 	while [ $# -gt 0 ]; do
 		OPTIND=1
 		tot=$OPTIND
-		while getopts l:p:P:o:L:s opt; do
+		while getopts l:p:P:o:L:sd opt; do
 		  case "$opt" in
 		   l) flags[user]="$OPTARG";;
 		   p) flags[port]="$OPTARG";;
 		   P) flags[protocol]="$OPTARG";;
 		   o) flags[options]="$OPTARG";;
 		   s) flags[password]="null";;
+           d) flags[debug]="true";;
            L) flags[logging]="$OPTARG";;
 		   *) exit 108 
 		  esac
@@ -94,6 +95,7 @@ else       # Reset in case getopts has been used previously in the shell.
 				if [ ${#connections[@]} -eq 0 ]; then invalid 24 ${vals[@]} ; fi
 				if [ ${#connections[@]} -eq 1 ]; then
 					declare args
+                    declare debug
 					get_values ${connections[0]} ${ADDR[1]} ${ADDR[2]}
 				else 
 					for i in ${!connections[@]}; do
@@ -121,6 +123,7 @@ else       # Reset in case getopts has been used previously in the shell.
 		if [ ! -z "${flags[options]}" ]; then args[6]="${flags[options]}"; fi
 		if [ ! -z "${flags[logging]}" ]; then args[7]="${flags[logging]}"; fi
 		if [ ! -z "${flags[password]}" ] || [ ! -z "${flags[user]}" ]; then args[5]=""; fi
+        if [ ! -z "${flags[debug]}" ]; then debug="${flags[debug]}"; fi
 	else
 		invalid 3
 	fi
@@ -161,8 +164,10 @@ if [ $protocol = "ssh" ]; then
 	((p++))
 	done
 	fi
-	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 10; log_user 0; eval spawn $cmd; log_user 1; $wordpass; $interact" 2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs);
-	else /usr/bin/expect -c "set timeout 10; log_user 0; eval spawn $cmd; log_user 1; $wordpass; $interact"  2> /dev/null; fi
+    loguser="log_user 0"
+    if [ ! -z $debug ]; then loguser="log_user 1"; fi
+	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 10; $loguser; eval spawn $cmd; log_user 1; $wordpass; $interact" 2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs);
+	else /usr/bin/expect -c "set timeout 10; $loguser; eval spawn $cmd; log_user 1; $wordpass; $interact"  2> /dev/null; fi
 elif [ $protocol = "telnet" ]; then
 	cmd="telnet $hostname $port $options"
 	if [ ! -z ${password[0]} ] ; then userpass="expect\
@@ -185,8 +190,10 @@ elif [ $protocol = "telnet" ]; then
 	\"assword:\"; send \"${password[0]}\"\
 	"
 	fi
-	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 10; log_user 0; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs) ;
-	else /usr/bin/expect -c "set timeout 10; log_user 0; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null ; fi
+    loguser="log_user 0"
+    if [ ! -z $debug ]; then loguser="log_user 1"; fi
+	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 10; $loguser; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs) ;
+	else /usr/bin/expect -c "set timeout 10; $loguser; eval spawn $cmd; log_user 1; $userpass; $interact"  2> /dev/null ; fi
 else 
 invalid 9 $protocol
 fi
