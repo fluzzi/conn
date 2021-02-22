@@ -76,7 +76,7 @@ profile(){
 	      inputregex Hostname/IP '(^.+$)'
 	      host=$valueregex
 	  else
-	      protocol=${oldvalues[0]}
+	      host=${oldvalues[0]}
       fi
 	  echo
 	  if [ ! -z $(modify Protocol) ]; then
