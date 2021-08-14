@@ -1,5 +1,4 @@
 firstrun(){
-  if [ ! -d $DATADIR ]; then mkdir -p $DATADIR; fi
   if [ ! -f $DATADIR/.osk ]; then openssl genrsa -out $DATADIR/.osk 2048  &> /dev/null; chmod  600 $DATADIR/.osk; fi
   if [ ! -f $DATADIR/profiles.json ]; then
     touch $DATADIR/profiles.json; chmod  600 $DATADIR/profiles.json

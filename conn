@@ -1,10 +1,10 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/.conn"
 [ -d "$DIR" ] || DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/connfiles"
-DATADIR=$HOME/.conn
+DATADIR=$HOME/.config/conn
 SCRIPT_NAME="$(basename "$0")"
-source $DIR/firstrun.sh
 source $DIR/loadconfig.sh
+source $DIR/firstrun.sh
 if [ $frun == "true" ]; then firstrun; fi
 source $DIR/errors.sh
 source $DIR/var.sh

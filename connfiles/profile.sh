@@ -6,7 +6,7 @@ profile(){
 	  echo Adding profile $profile
 	  echo
 	  echo do you want to set a host for this profile? if not, please leave empty
-	  inputregex Hostname/IP '(^.+$)'
+	  inputregex Hostname/IP '(^.*$)'
 	  host=$valueregex
 	  echo
 	  echo do you want to set a protocol for this profile? if not, please leave empty
@@ -73,7 +73,7 @@ profile(){
 	  if [ ! -z $(modify Host) ]; then
 		  echo
 	      echo do you want to set a host for this profile? if not, please leave empty
-	      inputregex Hostname/IP '(^.+$)'
+	      inputregex Hostname/IP '(^.*$)'
 	      host=$valueregex
 	  else
 	      host=${oldvalues[0]}

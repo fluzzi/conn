@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-DATADIR=$HOME/.conn
+DATADIR=$HOME/.config/conn
 function join_by { 
 input=($@)
 if [[ ${input[0]} == "-m" ]]; then
