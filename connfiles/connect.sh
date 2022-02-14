@@ -161,14 +161,15 @@ if [ $protocol = "ssh" ]; then
 	p=1
 	while [ $p -lt "${#password[@]}" ] ; do
 	wordpass="$wordpass ; expect \"yes/no\" { send \"yes\r\";exp_continue} \
-    \"suspend\" { send \"\r\"; sleep 1 }\
+    \"suspend\" { send \"\r\"; sleep 2 }\
     \"assword:\"; send \"${password[$p]}\r\""
 	((p++))
 	done
 	fi
     loguser="log_user 0"
     if [ ! -z $debug ]; then loguser="log_user 1"; fi
-	if [ ! -z $logs ]; then /usr/bin/expect -c "set timeout 10; $loguser;\
+	if [ ! -z $logs ]; then 
+    /usr/bin/expect -c "set timeout 10; $loguser;\
     eval spawn $cmd; log_user 1; \
     $wordpass; $interact"\
     2> /dev/null | tee >(sed -e "s,\x1B\[[?0-9;]*[a-zA-Z],,g" -e $'s/[^[:print:]\t]//g' -e "s/\]0;//g" > $logs);
